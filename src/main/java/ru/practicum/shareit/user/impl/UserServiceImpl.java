@@ -16,7 +16,7 @@ import static ru.practicum.shareit.exception.NotFoundException.notFoundException
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    private final static String USER_NOT_FOUND_MESSAGE = "Пользователь с идентификатором {0} не найден";
+    private static final String USER_NOT_FOUND_MESSAGE = "Пользователь с идентификатором {0} не найден";
 
     private final UserRepository userRepository;
 
