@@ -2,7 +2,7 @@ package ru.practicum.shareit.user.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.base.BaseResponse;
+import ru.practicum.shareit.common.dto.BaseResponse;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.UserService;
