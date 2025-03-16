@@ -23,7 +23,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto create(UserDto userDto) {
         User user = UserMapper.mapToModel(userDto);
-        checkExistEmail(user.getEmail());
+        checkExistEmail(user);
         user = userRepository.create(user);
         return UserMapper.mapToDto(user);
     }
@@ -33,6 +33,7 @@ public class UserServiceImpl implements UserService {
         User user = UserMapper.mapToModel(userDto);
         User oldUser = userRepository.findById(user.getId()).orElseThrow(notFoundException(USER_NOT_FOUND_MESSAGE));
         User result = update(oldUser, user);
+        checkExistEmail(result);
         userRepository.update(result);
         return UserMapper.mapToDto(result);
     }
@@ -58,12 +59,7 @@ public class UserServiceImpl implements UserService {
                 .build();
     }
 
-    private void checkExistUser(long id) {
-        userRepository.findById(id)
-                .orElseThrow(notFoundException(USER_NOT_FOUND_MESSAGE, id));
-    }
-
-    private void checkExistEmail(String email) {
-        userRepository.checkEmailExists(email);
+    private void checkExistEmail(User user) {
+        userRepository.checkEmailExists(user);
     }
 }

@@ -25,9 +25,8 @@ public class UserRepositoryInMemoryImpl implements UserRepository {
     }
 
     @Override
-    public User update(User user) {
+    public void update(User user) {
         users.put(user.getId(), user);
-        return user;
     }
 
     @Override
@@ -41,10 +40,14 @@ public class UserRepositoryInMemoryImpl implements UserRepository {
     }
 
     @Override
-    public void checkEmailExists(String email) {
-        long count = users.values().stream().map(User::getEmail).filter(email::equals).count();
+    public void checkEmailExists(User user) {
+        long count = users.values().stream()
+                .filter(u -> u.getEmail().equals(user.getEmail()))
+                .filter(u -> !u.getId().equals(user.getId()))
+                .count();
+
         if (count != 0L) {
-            throw new AlreadyExistsEmailException(EMAIL_EXISTS_ERROR_MESSAGE, email);
+            throw new AlreadyExistsEmailException(EMAIL_EXISTS_ERROR_MESSAGE, user.getEmail());
         }
     }
 
