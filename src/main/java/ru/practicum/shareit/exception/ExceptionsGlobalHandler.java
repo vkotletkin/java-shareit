@@ -4,6 +4,7 @@ import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -58,5 +59,19 @@ public class ExceptionsGlobalHandler {
         log.error(e.getMessage());
 
         return new ValidationErrorResponse(errorResponses);
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler
+    public BaseErrorResponse handleMissingRequestHeaderException(MissingRequestHeaderException e) {
+        log.error(e.getMessage());
+        return new BaseErrorResponse("Ошибка передачи заголовка.", e.getHeaderName());
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler
+    public BaseErrorResponse handleIncorrectOwnerException(IncorrectOwnerException e) {
+        log.error(e.getMessage());
+        return new BaseErrorResponse("Ошибка идентификатора владельца.", e.getMessage());
     }
 }

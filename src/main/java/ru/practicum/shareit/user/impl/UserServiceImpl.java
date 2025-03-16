@@ -51,15 +51,15 @@ public class UserServiceImpl implements UserService {
         return new BaseResponse(String.format("Пользователь с идентификатором %d - удален.", id));
     }
 
+    private void checkExistEmail(User user) {
+        userRepository.checkEmailExists(user);
+    }
+
     private User update(User originalUser, User newUser) {
         return User.builder()
                 .id(newUser.getId())
                 .email(newUser.getEmail() == null ? originalUser.getEmail() : newUser.getEmail())
                 .name(newUser.getName() == null ? originalUser.getName() : newUser.getName())
                 .build();
-    }
-
-    private void checkExistEmail(User user) {
-        userRepository.checkEmailExists(user);
     }
 }

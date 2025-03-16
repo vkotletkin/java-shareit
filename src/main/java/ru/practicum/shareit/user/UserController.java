@@ -13,7 +13,8 @@ import ru.practicum.shareit.user.dto.UserDto;
 @RequiredArgsConstructor
 public class UserController {
 
-    private final String ENDPOINT_PATH_ID = "/{id}";
+    private static final String ENDPOINT_PATH_ID = "/{id}";
+
     private final UserService service;
 
     @PostMapping
@@ -26,14 +27,14 @@ public class UserController {
         return service.findById(id);
     }
 
-    @DeleteMapping(ENDPOINT_PATH_ID)
-    public BaseResponse delete(@PathVariable long id) {
-        return service.delete(id);
-    }
-
     @PatchMapping(ENDPOINT_PATH_ID)
     public UserDto update(@RequestBody UserDto userDto, @PathVariable Long id) {
         userDto.setId(id);
         return service.update(userDto);
+    }
+
+    @DeleteMapping(ENDPOINT_PATH_ID)
+    public BaseResponse delete(@PathVariable long id) {
+        return service.delete(id);
     }
 }
