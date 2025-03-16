@@ -1,5 +1,6 @@
 package ru.practicum.shareit.user;
 
+import ru.practicum.shareit.base.BaseResponse;
 import ru.practicum.shareit.user.dto.UserDto;
 
 public interface UserService {
@@ -9,5 +10,5 @@ public interface UserService {
 
     UserDto findById(long id);
 
-    void delete(long id);
+    BaseResponse delete(long id);
 }

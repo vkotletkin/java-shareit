@@ -2,6 +2,7 @@ package ru.practicum.shareit.user.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.base.BaseResponse;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.UserService;
@@ -30,10 +31,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto update(UserDto userDto) {
         User user = UserMapper.mapToModel(userDto);
-        checkExistUser(userDto.getId());
-        checkExistEmail(user.getEmail());
-        user = userRepository.update(user);
-        return UserMapper.mapToDto(user);
+        User oldUser = userRepository.findById(user.getId()).orElseThrow(notFoundException(USER_NOT_FOUND_MESSAGE));
+        User result = update(oldUser, user);
+        userRepository.update(result);
+        return UserMapper.mapToDto(result);
     }
 
     @Override
@@ -44,8 +45,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void delete(long id) {
+    public BaseResponse delete(long id) {
         userRepository.delete(id);
+        return new BaseResponse(String.format("Пользователь с идентификатором %d - удален.", id));
+    }
+
+    private User update(User originalUser, User newUser) {
+        return User.builder()
+                .id(newUser.getId())
+                .email(newUser.getEmail() == null ? originalUser.getEmail() : newUser.getEmail())
+                .name(newUser.getName() == null ? originalUser.getName() : newUser.getName())
+                .build();
     }
 
     private void checkExistUser(long id) {
