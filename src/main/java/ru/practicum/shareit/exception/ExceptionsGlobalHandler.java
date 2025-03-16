@@ -72,6 +72,6 @@ public class ExceptionsGlobalHandler {
     @ExceptionHandler
     public BaseErrorResponse handleIncorrectOwnerException(IncorrectOwnerException e) {
         log.error(e.getMessage());
-        return new BaseErrorResponse("Ошибка идентификатора владельца.", e.getMessage());
+        return new BaseErrorResponse("Ошибка при передаче идентификатора владельца предмета", e.getMessage());
     }
 }
