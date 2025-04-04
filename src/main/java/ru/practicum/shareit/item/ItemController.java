@@ -28,7 +28,7 @@ public class ItemController {
 
     @GetMapping
     public Collection<ItemDto> findAllOnUser(@RequestHeader(name = USER_IDENTIFICATOR_HEADER_NAME) Long userId) {
-        return service.findAllOnUser(userId);
+        return service.findAllItemsByUser(userId);
     }
 
     @GetMapping(ENDPOINT_PATH_ID)
@@ -48,6 +48,6 @@ public class ItemController {
     @GetMapping("/search")
     public Collection<ItemDto> search(@RequestParam(name = "text") String text,
                                       @RequestHeader(name = USER_IDENTIFICATOR_HEADER_NAME) Long userId) {
-        return service.findByText(text, userId);
+        return service.findByText(text);
     }
 }
