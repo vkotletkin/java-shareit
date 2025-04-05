@@ -1,4 +1,4 @@
-package ru.practicum.shareit.item.model;
+package ru.practicum.shareit.item;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -25,10 +25,10 @@ public class Item {
     @Column(nullable = false)
     String description;
 
-    @Column(name = "available")
+    @Column(name = "available", nullable = false)
     Boolean available;
 
-    @JoinColumn(name = "owner_id", referencedColumnName = "id")
+    @JoinColumn(name = "owner_id", referencedColumnName = "id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     @ToString.Exclude
     User ownerId;

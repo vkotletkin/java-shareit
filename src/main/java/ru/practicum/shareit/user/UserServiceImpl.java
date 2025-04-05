@@ -1,15 +1,10 @@
-package ru.practicum.shareit.user.impl;
+package ru.practicum.shareit.user;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.common.dto.BaseResponse;
 import ru.practicum.shareit.exception.AlreadyExistsEmailException;
-import ru.practicum.shareit.user.User;
-import ru.practicum.shareit.user.UserRepository;
-import ru.practicum.shareit.user.UserService;
-import ru.practicum.shareit.user.dto.UserDto;
-import ru.practicum.shareit.user.mapper.UserMapper;
 
 import static ru.practicum.shareit.exception.NotFoundException.notFoundException;
 

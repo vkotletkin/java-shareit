@@ -1,7 +1,43 @@
 package ru.practicum.shareit.booking;
 
-/**
- * TODO Sprint add-bookings.
- */
+import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.FieldDefaults;
+import ru.practicum.shareit.item.Item;
+import ru.practicum.shareit.user.User;
+
+import java.time.Instant;
+
+@Entity
+@Table(name = "bookings", schema = "public")
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@Getter
+@Setter
+@ToString
 public class Booking {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    Long id;
+
+    @Column(name = "start", nullable = false)
+    Instant start;
+
+    @Column(name = "end", nullable = false)
+    Instant end;
+
+    @ToString.Exclude
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "item_id", referencedColumnName = "id", nullable = false)
+    Item item;
+
+    @ToString.Exclude
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "booker_id", referencedColumnName = "id", nullable = false)
+    User user;
+
+    @Enumerated(EnumType.STRING)
+    BookingState state;
 }

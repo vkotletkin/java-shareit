@@ -1,12 +1,8 @@
-package ru.practicum.shareit.item.impl;
+package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.item.ItemRepository;
-import ru.practicum.shareit.item.ItemService;
-import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.mapper.ItemMapper;
-import ru.practicum.shareit.item.model.Item;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
 
@@ -16,6 +12,7 @@ import java.util.stream.Collectors;
 
 import static ru.practicum.shareit.exception.NotFoundException.notFoundException;
 
+@Transactional(readOnly = true)
 @Service
 @RequiredArgsConstructor
 public class ItemServiceImpl implements ItemService {
@@ -26,6 +23,7 @@ public class ItemServiceImpl implements ItemService {
     private final UserRepository userRepository;
 
     @Override
+    @Transactional
     public ItemDto create(ItemDto itemDto) {
         User user = userRepository.findById(itemDto.getOwnerId()).orElseThrow(notFoundException(USER_NOT_FOUND_MESSAGE));
         Item item = ItemMapper.mapToModel(itemDto, user);

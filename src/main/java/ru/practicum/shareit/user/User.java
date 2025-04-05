@@ -19,10 +19,10 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @Column
+    @Column(nullable = false)
     String name;
 
-    @Column
+    @Column(unique = true, nullable = false)
     String email;
 
     @Override
