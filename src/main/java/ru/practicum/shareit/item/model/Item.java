@@ -19,10 +19,10 @@ public class Item {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @Column
+    @Column(nullable = false)
     String name;
 
-    @Column
+    @Column(nullable = false)
     String description;
 
     @Column(name = "available")
@@ -30,6 +30,7 @@ public class Item {
 
     @JoinColumn(name = "owner_id", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.LAZY)
+    @ToString.Exclude
     User ownerId;
 
     @Column(name = "request_id")

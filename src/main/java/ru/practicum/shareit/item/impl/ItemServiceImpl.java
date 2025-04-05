@@ -59,8 +59,7 @@ public class ItemServiceImpl implements ItemService {
         if (text.isBlank()) {
             return Collections.emptyList();
         }
-        // TODO: подумай, мб сделать все таки одним запросом все?
-        return itemRepository.findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(text, text)
+        return itemRepository.findTextNameAndDescription(text)
                 .stream().filter(Item::getAvailable).map(ItemMapper::mapToDto).collect(Collectors.toList());
     }
 
