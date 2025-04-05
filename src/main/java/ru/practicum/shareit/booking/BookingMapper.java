@@ -2,20 +2,33 @@ package ru.practicum.shareit.booking;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.common.dto.CatalogMapper;
 import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.user.User;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class BookingMapper {
 
-    public static Booking mapToDto(BookingDto bookingDto, User user, Item item) {
+    public static Booking mapToModel(BookingInputRequest bookingInputRequest, User user, Item item) {
         Booking booking = new Booking();
-        booking.setId(bookingDto.getId());
-        booking.setStart(bookingDto.getStart());
-        booking.setEnd(bookingDto.getEnd());
-        booking.setUser(user);
+        booking.setId(bookingInputRequest.getId());
+        booking.setStart(bookingInputRequest.getStart());
+        booking.setEnd(bookingInputRequest.getEnd());
+        booking.setBooker(user);
         booking.setItem(item);
+        booking.setState(bookingInputRequest.getStatus());
         return booking;
+    }
+
+    // TODO: сделай join fetch
+    public static BookingDto mapToDto(Booking booking) {
+        return BookingDto.builder()
+                .id(booking.getId())
+                .start(booking.getStart())
+                .end(booking.getEnd())
+                .booker(CatalogMapper.mapToDto(booking.getBooker()))
+                .item(CatalogMapper.mapToDto(booking.getItem()))
+                .status(booking.getState())
+                .build();
     }
 }

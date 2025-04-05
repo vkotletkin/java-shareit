@@ -1,4 +1,4 @@
-package ru.practicum.shareit.booking.dto;
+package ru.practicum.shareit.booking;
 
 
 import jakarta.validation.constraints.FutureOrPresent;
@@ -7,9 +7,9 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
-import ru.practicum.shareit.booking.BookingState;
+import ru.practicum.shareit.common.dto.CatalogDto;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -19,17 +19,16 @@ public class BookingDto {
 
     @NotNull
     @FutureOrPresent(message = "Дата должна быть в настоящем или будущем")
-    Instant start;
+    LocalDateTime start;
 
     @NotNull
     @FutureOrPresent(message = "Дата должна быть в настоящем или будущем")
-    Instant end;
+    LocalDateTime end;
+
+    CatalogDto booker;
+
+    CatalogDto item;
 
     @NotNull
-    Long itemId;
-
-    Long userId;
-
-    @NotNull
-    BookingState state;
+    BookingStatus status;
 }

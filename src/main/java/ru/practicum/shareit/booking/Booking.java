@@ -9,7 +9,7 @@ import lombok.experimental.FieldDefaults;
 import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.user.User;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "bookings", schema = "public")
@@ -22,11 +22,11 @@ public class Booking {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @Column(name = "start", nullable = false)
-    Instant start;
+    @Column(name = "start_timestamp", nullable = false)
+    LocalDateTime start;
 
-    @Column(name = "end", nullable = false)
-    Instant end;
+    @Column(name = "end_timestamp", nullable = false)
+    LocalDateTime end;
 
     @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY)
@@ -36,8 +36,9 @@ public class Booking {
     @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "booker_id", referencedColumnName = "id", nullable = false)
-    User user;
+    User booker;
 
+    @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
-    BookingState state;
+    BookingStatus state = BookingStatus.WAITING;
 }

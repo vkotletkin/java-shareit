@@ -2,14 +2,13 @@ package ru.practicum.shareit.booking;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.exception.StartAfterEndException;
 import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 import static ru.practicum.shareit.exception.NotFoundException.notFoundException;
 
@@ -26,16 +25,16 @@ public class BookingServiceImpl implements BookingService {
 
 
     @Override
-    public BookingDto create(BookingDto bookingDto) {
-        checkStartAndEnd(bookingDto.getStart(), bookingDto.getEnd());
-        Item item = itemRepository.findById(bookingDto.getItemId()).orElseThrow(notFoundException(ITEM_NOT_FOUND_MESSAGE));
-        User user = userRepository.findById(bookingDto.getUserId()).orElseThrow(notFoundException(USER_NOT_FOUND_MESSAGE));
-        Booking booking = BookingMapper.mapToDto(bookingDto, user, item);
-        bookingRepository.save(booking);
-        return bookingDto;
+    public BookingDto create(BookingInputRequest bookingInputRequest) {
+        checkStartAndEnd(bookingInputRequest.getStart(), bookingInputRequest.getEnd());
+        Item item = itemRepository.findById(bookingInputRequest.getItemId()).orElseThrow(notFoundException(ITEM_NOT_FOUND_MESSAGE));
+        User user = userRepository.findById(bookingInputRequest.getBookerId()).orElseThrow(notFoundException(USER_NOT_FOUND_MESSAGE));
+        Booking booking = BookingMapper.mapToModel(bookingInputRequest, user, item);
+        booking = bookingRepository.save(booking);
+        return BookingMapper.mapToDto(booking);
     }
 
-    private void checkStartAndEnd(Instant start, Instant end) {
+    private void checkStartAndEnd(LocalDateTime start, LocalDateTime end) {
         if (start.isAfter(end)) {
             throw new StartAfterEndException("Начало не должно быть после конца временного промежутка");
         }
