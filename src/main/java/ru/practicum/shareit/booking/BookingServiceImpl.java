@@ -1,6 +1,7 @@
 package ru.practicum.shareit.booking;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.NotAvailableItemException;
 import ru.practicum.shareit.exception.StartAfterEndException;
@@ -11,6 +12,7 @@ import ru.practicum.shareit.user.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static ru.practicum.shareit.exception.NotFoundException.notFoundException;
 
@@ -67,16 +69,43 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<BookingDto> getAllBookings(BookingState state, long userId) {
-        User user = userRepository.findById(userId)
+        userRepository.findById(userId)
                 .orElseThrow(notFoundException(USER_NOT_FOUND_MESSAGE, userId));
+        LocalDateTime nowTimestamp = LocalDateTime.now();
+        Sort sortByStart = Sort.by(Sort.Direction.ASC, "start");
         List<Booking> bookings = switch (state) {
-            case ALL -> bookingRepository.findByBooker_IdOrderByStartDesc(userId);
-            case CURRENT -> bookingRepository.findByBooker_Id;
-            case PAST -> null;
-            case FUTURE -> null;
-            case WAITING -> bookingRepository.findByBooker_IdAndStatusEquals
-            case REJECTED -> null;
+            case ALL -> bookingRepository.findByBooker_Id(userId, sortByStart);
+            case CURRENT ->
+                    bookingRepository.findByBooker_IdAndStartBeforeAndEndAfter(userId, nowTimestamp, nowTimestamp, sortByStart); // todo: change!!! all
+            case PAST -> bookingRepository.findByBooker_IdAndEndBefore(userId, nowTimestamp, sortByStart);
+            case FUTURE -> bookingRepository.findByBooker_IdAndStartAfter(userId, nowTimestamp, sortByStart);
+            case WAITING -> bookingRepository.findByBooker_IdAndStatus(userId, BookingStatus.WAITING, sortByStart);
+            case REJECTED -> bookingRepository.findByBooker_IdAndStatus(userId, BookingStatus.REJECTED, sortByStart);
         };
+        return bookings.stream().map(BookingMapper::mapToDto).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<BookingDto> getAllBookingsOfUserItems(BookingState state, long userId) {
+        userRepository.findById(userId)
+                .orElseThrow(notFoundException(USER_NOT_FOUND_MESSAGE, userId));
+        long count = itemRepository.countItemsByOwnerIdEquals(userId);
+        if (count == 0) {
+            throw new RuntimeException("0 objectov u user");
+        }
+
+        LocalDateTime nowTimestamp = LocalDateTime.now();
+        Sort sortByStart = Sort.by(Sort.Direction.ASC, "start");
+        List<Booking> bookings = switch (state) {
+            case ALL -> bookingRepository.findByItem_Owner_Id(userId, sortByStart);
+            case CURRENT ->
+                    bookingRepository.findByItem_Owner_IdAndStartBeforeAndEndAfter(userId, nowTimestamp, nowTimestamp, sortByStart); // todo: change!!! all
+            case PAST -> bookingRepository.findByItem_Owner_IdAndEndBefore(userId, nowTimestamp, sortByStart);
+            case FUTURE -> bookingRepository.findByItem_Owner_IdAndStartAfter(userId, nowTimestamp, sortByStart);
+            case WAITING -> bookingRepository.findByItem_Owner_IdAndStatus(userId, BookingStatus.WAITING, sortByStart);
+            case REJECTED -> bookingRepository.findByItem_Owner_IdAndStatus(userId, BookingStatus.REJECTED, sortByStart);
+        };
+        return bookings.stream().map(BookingMapper::mapToDto).collect(Collectors.toList());
     }
 
     private void checkStartAndEnd(LocalDateTime start, LocalDateTime end) {

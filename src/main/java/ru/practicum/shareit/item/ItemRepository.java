@@ -18,4 +18,6 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     Collection<Item> findTextNameAndDescription(String text);
 
     Optional<Item> findByIdAndAvailableTrue(long itemId);
+
+    long countItemsByOwnerIdEquals(long userId);
 }
