@@ -5,14 +5,17 @@ import org.springframework.data.jpa.repository.Query;
 import ru.practicum.shareit.user.User;
 
 import java.util.Collection;
+import java.util.Optional;
 
 public interface ItemRepository extends JpaRepository<Item, Long> {
 
-    Collection<Item> findByOwnerIdEquals(User ownerId);
+    Collection<Item> findByOwnerIdEquals(long ownerId);
 
     @Query("""
             SELECT it FROM Item it
             WHERE (LOWER(it.name) LIKE LOWER(?1) OR LOWER(it.description) LIKE LOWER(?1)) AND it.available = true
             """)
     Collection<Item> findTextNameAndDescription(String text);
+
+    Optional<Item> findByIdAndAvailableTrue(long itemId);
 }

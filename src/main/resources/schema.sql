@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS bookings
     end_timestamp   TIMESTAMP                               NOT NULL,
     item_id         BIGINT                                  NOT NULL,
     booker_id       BIGINT                                  NOT NULL,
-    status          VARCHAR(20)                             NOT NULL,
+    status          VARCHAR(20) DEFAULT 'WAITING'           NOT NULL,
     CONSTRAINT pk_booking PRIMARY KEY (id),
     CONSTRAINT fk_item_id FOREIGN KEY (item_id) REFERENCES items (id) ON DELETE CASCADE,
     CONSTRAINT fk_booker_id FOREIGN KEY (booker_id) REFERENCES users (id) ON DELETE CASCADE

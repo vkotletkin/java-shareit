@@ -16,7 +16,7 @@ public class BookingMapper {
         booking.setEnd(bookingInputRequest.getEnd());
         booking.setBooker(user);
         booking.setItem(item);
-        booking.setState(bookingInputRequest.getStatus());
+        booking.setStatus(bookingInputRequest.getStatus() == null ? BookingStatus.WAITING : bookingInputRequest.getStatus());
         return booking;
     }
 
@@ -28,7 +28,7 @@ public class BookingMapper {
                 .end(booking.getEnd())
                 .booker(CatalogMapper.mapToDto(booking.getBooker()))
                 .item(CatalogMapper.mapToDto(booking.getItem()))
-                .status(booking.getState())
+                .status(booking.getStatus())
                 .build();
     }
 }

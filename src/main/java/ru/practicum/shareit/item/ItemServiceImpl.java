@@ -34,7 +34,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public Collection<ItemDto> findAllItemsByUser(long userId) {
         User user = userRepository.findById(userId).orElseThrow(notFoundException(USER_NOT_FOUND_MESSAGE));
-        return itemRepository.findByOwnerIdEquals(user).stream().map(ItemMapper::mapToDto).collect(Collectors.toList());
+        return itemRepository.findByOwnerIdEquals(user.getId()).stream().map(ItemMapper::mapToDto).collect(Collectors.toList());
     }
 
     @Override
@@ -67,7 +67,7 @@ public class ItemServiceImpl implements ItemService {
         item.setName(newFilm.getName() == null ? oldFilm.getName() : newFilm.getName());
         item.setDescription(newFilm.getDescription() == null ? oldFilm.getDescription() : newFilm.getDescription());
         item.setAvailable(newFilm.getAvailable());
-        item.setOwnerId(newFilm.getOwnerId() == null ? oldFilm.getOwnerId() : newFilm.getOwnerId());
+        item.setOwner(newFilm.getOwner() == null ? oldFilm.getOwner() : newFilm.getOwner());
         item.setRequestId(newFilm.getRequestId() == null ? oldFilm.getRequestId() : newFilm.getRequestId());
         return item;
     }
