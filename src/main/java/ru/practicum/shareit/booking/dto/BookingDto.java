@@ -1,4 +1,4 @@
-package ru.practicum.shareit.booking;
+package ru.practicum.shareit.booking.dto;
 
 
 import jakarta.validation.constraints.FutureOrPresent;
@@ -7,6 +7,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
+import ru.practicum.shareit.booking.BookingStatus;
 import ru.practicum.shareit.common.dto.CatalogDto;
 
 import java.time.LocalDateTime;

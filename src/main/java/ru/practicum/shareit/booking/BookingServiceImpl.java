@@ -3,6 +3,8 @@ package ru.practicum.shareit.booking;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.booking.dto.BookingInputRequest;
 import ru.practicum.shareit.exception.NotAvailableItemException;
 import ru.practicum.shareit.exception.StartAfterEndException;
 import ru.practicum.shareit.item.Item;
@@ -54,6 +56,7 @@ public class BookingServiceImpl implements BookingService {
             throw new NotAvailableItemException("такое нельзя ибо юзер не подходит"); // TODO: делаем 400 ошибку
         }
         booking.setStatus(approved ? BookingStatus.APPROVED : BookingStatus.REJECTED);
+        bookingRepository.save(booking);
         return BookingMapper.mapToDto(booking);
     }
 
@@ -103,7 +106,8 @@ public class BookingServiceImpl implements BookingService {
             case PAST -> bookingRepository.findByItem_Owner_IdAndEndBefore(userId, nowTimestamp, sortByStart);
             case FUTURE -> bookingRepository.findByItem_Owner_IdAndStartAfter(userId, nowTimestamp, sortByStart);
             case WAITING -> bookingRepository.findByItem_Owner_IdAndStatus(userId, BookingStatus.WAITING, sortByStart);
-            case REJECTED -> bookingRepository.findByItem_Owner_IdAndStatus(userId, BookingStatus.REJECTED, sortByStart);
+            case REJECTED ->
+                    bookingRepository.findByItem_Owner_IdAndStatus(userId, BookingStatus.REJECTED, sortByStart);
         };
         return bookings.stream().map(BookingMapper::mapToDto).collect(Collectors.toList());
     }
