@@ -2,6 +2,8 @@ package ru.practicum.shareit.item;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import ru.practicum.shareit.item.dto.ItemBookingDto;
+import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.user.User;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -28,4 +30,6 @@ public class ItemMapper {
                 .requestId(item.getRequestId())
                 .build();
     }
+
+    //public static ItemBookingDto mapToDto(Item item, ) {}
 }

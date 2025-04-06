@@ -1,4 +1,4 @@
-package ru.practicum.shareit.item;
+package ru.practicum.shareit.item.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -7,11 +7,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDateTime;
 
 @Data
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ItemDto {
+public class ItemBookingDto {
     Long id;
 
     @NotBlank
@@ -24,6 +25,7 @@ public class ItemDto {
     Boolean available;
 
     Long ownerId;
-
     Long requestId;
+    LocalDateTime lastBooking;
+    LocalDateTime nextBooking;
 }

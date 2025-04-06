@@ -3,11 +3,15 @@ package ru.practicum.shareit.item;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.booking.Booking;
+import ru.practicum.shareit.booking.BookingRepository;
+import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static ru.practicum.shareit.exception.NotFoundException.notFoundException;
@@ -21,6 +25,7 @@ public class ItemServiceImpl implements ItemService {
 
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
+    private final BookingRepository bookingRepository;
 
     @Override
     @Transactional
@@ -34,6 +39,8 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public Collection<ItemDto> findAllItemsByUser(long userId) {
         User user = userRepository.findById(userId).orElseThrow(notFoundException(USER_NOT_FOUND_MESSAGE));
+        Collection<Item> items = itemRepository.findByOwnerIdEquals(user.getId());
+    //    List<Booking> bookings = itemRepository.findAllById();
         return itemRepository.findByOwnerIdEquals(user.getId())
                 .stream().map(ItemMapper::mapToDto).collect(Collectors.toList());
     }

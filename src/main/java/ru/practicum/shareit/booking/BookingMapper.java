@@ -8,6 +8,9 @@ import ru.practicum.shareit.common.dto.CatalogMapper;
 import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.user.User;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class BookingMapper {
 
@@ -31,5 +34,13 @@ public class BookingMapper {
                 .item(CatalogMapper.mapToDto(booking.getItem()))
                 .status(booking.getStatus())
                 .build();
+    }
+
+    public static List<BookingDto> mapToDto(List<Booking> bookings) {
+        List<BookingDto> dtos = new ArrayList<>();
+        for (Booking booking : bookings) {
+            dtos.add(mapToDto(booking));
+        }
+        return dtos;
     }
 }

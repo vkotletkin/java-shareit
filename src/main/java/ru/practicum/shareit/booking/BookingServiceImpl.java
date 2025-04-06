@@ -8,6 +8,7 @@ import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingInputRequest;
 import ru.practicum.shareit.exception.IncorrectOwnerException;
 import ru.practicum.shareit.exception.NotAvailableItemException;
+import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.StartAfterEndException;
 import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.item.ItemRepository;
@@ -78,8 +79,10 @@ public class BookingServiceImpl implements BookingService {
     public List<BookingDto> getAllBookings(BookingState state, long userId) {
         userRepository.findById(userId)
                 .orElseThrow(notFoundException(USER_NOT_FOUND_MESSAGE, userId));
+
         LocalDateTime nowTimestamp = LocalDateTime.now();
         Sort sortByStart = Sort.by(Sort.Direction.ASC, "start");
+
         List<Booking> bookings = switch (state) {
             case ALL -> bookingRepository.findByBooker_Id(userId, sortByStart);
             case CURRENT ->
@@ -89,7 +92,8 @@ public class BookingServiceImpl implements BookingService {
             case WAITING -> bookingRepository.findByBooker_IdAndStatus(userId, BookingStatus.WAITING, sortByStart);
             case REJECTED -> bookingRepository.findByBooker_IdAndStatus(userId, BookingStatus.REJECTED, sortByStart);
         };
-        return bookings.stream().map(BookingMapper::mapToDto).collect(Collectors.toList());
+
+        return BookingMapper.mapToDto(bookings);
     }
 
     @Override
@@ -98,11 +102,12 @@ public class BookingServiceImpl implements BookingService {
                 .orElseThrow(notFoundException(USER_NOT_FOUND_MESSAGE, userId));
         long count = itemRepository.countItemsByOwnerIdEquals(userId);
         if (count == 0) {
-            throw new RuntimeException("0 objectov u user");
+            throw new NotFoundException("Предметы для указанного пользователя не найдены");
         }
 
         LocalDateTime nowTimestamp = LocalDateTime.now();
         Sort sortByStart = Sort.by(Sort.Direction.ASC, "start");
+
         List<Booking> bookings = switch (state) {
             case ALL -> bookingRepository.findByItem_Owner_Id(userId, sortByStart);
             case CURRENT ->
@@ -113,7 +118,8 @@ public class BookingServiceImpl implements BookingService {
             case REJECTED ->
                     bookingRepository.findByItem_Owner_IdAndStatus(userId, BookingStatus.REJECTED, sortByStart);
         };
-        return bookings.stream().map(BookingMapper::mapToDto).collect(Collectors.toList());
+
+        return BookingMapper.mapToDto(bookings);
     }
 
     private void checkStartAndEnd(LocalDateTime start, LocalDateTime end) {
