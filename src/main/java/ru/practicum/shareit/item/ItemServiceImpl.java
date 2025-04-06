@@ -34,7 +34,8 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public Collection<ItemDto> findAllItemsByUser(long userId) {
         User user = userRepository.findById(userId).orElseThrow(notFoundException(USER_NOT_FOUND_MESSAGE));
-        return itemRepository.findByOwnerIdEquals(user.getId()).stream().map(ItemMapper::mapToDto).collect(Collectors.toList());
+        return itemRepository.findByOwnerIdEquals(user.getId())
+                .stream().map(ItemMapper::mapToDto).collect(Collectors.toList());
     }
 
     @Override
@@ -56,7 +57,7 @@ public class ItemServiceImpl implements ItemService {
     public Collection<ItemDto> findByText(String text) {
         if (text.isBlank()) {
             return Collections.emptyList();
-        }
+        } // TODO: что это!!!
         return itemRepository.findTextNameAndDescription(text)
                 .stream().filter(Item::getAvailable).map(ItemMapper::mapToDto).collect(Collectors.toList());
     }

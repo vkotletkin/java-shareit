@@ -3,8 +3,10 @@ package ru.practicum.shareit.booking;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingInputRequest;
+import ru.practicum.shareit.exception.IncorrectOwnerException;
 import ru.practicum.shareit.exception.NotAvailableItemException;
 import ru.practicum.shareit.exception.StartAfterEndException;
 import ru.practicum.shareit.item.Item;
@@ -19,6 +21,7 @@ import java.util.stream.Collectors;
 import static ru.practicum.shareit.exception.NotFoundException.notFoundException;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class BookingServiceImpl implements BookingService {
 
@@ -33,8 +36,8 @@ public class BookingServiceImpl implements BookingService {
 
 
     @Override
+    @Transactional
     public BookingDto create(BookingInputRequest bookingInputRequest) {
-        // Порядок валидации не менять - иначе ломаются тесты
         checkStartAndEnd(bookingInputRequest.getStart(), bookingInputRequest.getEnd());
         Item item = itemRepository.findById(bookingInputRequest.getItemId())
                 .orElseThrow(notFoundException(ITEM_NOT_FOUND_MESSAGE, bookingInputRequest.getItemId()));
@@ -49,11 +52,12 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional
     public BookingDto statusChange(long bookingId, boolean approved, long userId) {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(notFoundException(BOOKING_NOT_FOUND_MESSAGE, bookingId));
         if (booking.getItem().getOwner().getId() != userId) {
-            throw new NotAvailableItemException("такое нельзя ибо юзер не подходит"); // TODO: делаем 400 ошибку
+            throw new IncorrectOwnerException("Переданный идентификатор не имеет доступ к выполнению данной операции");
         }
         booking.setStatus(approved ? BookingStatus.APPROVED : BookingStatus.REJECTED);
         bookingRepository.save(booking);
@@ -65,7 +69,7 @@ public class BookingServiceImpl implements BookingService {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(notFoundException(BOOKING_NOT_FOUND_MESSAGE, bookingId));
         if (booking.getItem().getOwner().getId() != userId && booking.getBooker().getId() != userId) {
-            throw new NotAvailableItemException("такое нельзя ибо юзер не подходит"); // TODO: делаем 400 ошибку
+            throw new NotAvailableItemException("Переданный идентификатор не имеет доступ к выполнению данной операции");
         }
         return BookingMapper.mapToDto(booking);
     }

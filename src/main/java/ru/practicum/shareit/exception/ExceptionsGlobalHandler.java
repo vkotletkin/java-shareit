@@ -68,7 +68,7 @@ public class ExceptionsGlobalHandler {
         return new BaseErrorResponse("Ошибка передачи заголовка.", e.getHeaderName());
     }
 
-    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler
     public BaseErrorResponse handleIncorrectOwnerException(final IncorrectOwnerException e) {
         log.error(e.getMessage());
@@ -79,7 +79,7 @@ public class ExceptionsGlobalHandler {
     @ExceptionHandler
     public BaseErrorResponse handleStartAfterEndException(final StartAfterEndException e) {
         log.error(e.getMessage());
-        return new BaseErrorResponse("Ошибка при передаче временных промежутоков", e.getMessage());
+        return new BaseErrorResponse("Ошибка при передаче временных промежутков", e.getMessage());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

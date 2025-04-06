@@ -22,7 +22,6 @@ public class BookingMapper {
         return booking;
     }
 
-    // TODO: сделай join fetch
     public static BookingDto mapToDto(Booking booking) {
         return BookingDto.builder()
                 .id(booking.getId())
