@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.BookingStatus;
+import ru.practicum.shareit.exception.NotAvailableItemException;
 import ru.practicum.shareit.item.dal.CommentRepository;
 import ru.practicum.shareit.item.dal.ItemRepository;
 import ru.practicum.shareit.item.dto.CommentDto;
@@ -32,7 +33,6 @@ import static ru.practicum.shareit.exception.NotFoundException.notFoundException
 public class ItemServiceImpl implements ItemService {
 
     private static final String USER_NOT_FOUND_MESSAGE = "Пользователь с идентификатором {0} не найден";
-    private static final String BOOKING_NOT_FOUND_MESSAGE = "Бронирование с идентификатором {0} не найдено";
 
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
@@ -48,17 +48,16 @@ public class ItemServiceImpl implements ItemService {
         return ItemMapper.mapToDto(item);
     }
 
-
     @Override
     public Collection<ItemDto> findAllItemsByUser(long userId) {
-        User user = userRepository.findById(userId).orElseThrow(notFoundException(USER_NOT_FOUND_MESSAGE));
+        User user = userRepository.findById(userId).orElseThrow(notFoundException(USER_NOT_FOUND_MESSAGE, userId));
         return itemRepository.findByOwnerIdEquals(user.getId())
                 .stream().map(ItemMapper::mapToDto).collect(Collectors.toList());
     }
 
     @Override
     public ItemEnrichedDto findById(long id) {
-        // TODO: refactoring
+        // todo: refactoring
         Item item = itemRepository.findById(id).orElseThrow(notFoundException(USER_NOT_FOUND_MESSAGE, id));
         List<Booking> bookings = bookingRepository.findAllByItem_Id(id);
         List<String> comments = commentRepository.findByItem_Id(id).stream().map(Comment::getText).toList();
@@ -66,6 +65,7 @@ public class ItemServiceImpl implements ItemService {
         if (bookings.isEmpty()) {
             return ItemMapper.mapToEnrichedDto(item, comments);
         }
+
         Booking lastBooking = bookings.stream()
                 .filter(t -> t.getEnd().isAfter(LocalDateTime.now())).findFirst().orElse(null);
 
@@ -76,7 +76,6 @@ public class ItemServiceImpl implements ItemService {
         LocalDateTime nextBooking = bookings.stream()
                 .map(Booking::getStart)
                 .filter(u -> u.isAfter(lastBooking.getEnd())).findFirst().orElse(null);
-
 
         return ItemMapper.mapToDto(item, lastBooking.getEnd(), nextBooking, comments);
     }
@@ -96,9 +95,9 @@ public class ItemServiceImpl implements ItemService {
     public Collection<ItemDto> findByText(String text) {
         if (text.isBlank()) {
             return Collections.emptyList();
-        } // TODO: что это!!!
+        }
         return itemRepository.findTextNameAndDescription(text)
-                .stream().filter(Item::getAvailable).map(ItemMapper::mapToDto).collect(Collectors.toList());
+                .stream().map(ItemMapper::mapToDto).collect(Collectors.toList());
     }
 
     @Override
@@ -106,14 +105,10 @@ public class ItemServiceImpl implements ItemService {
     public CommentDto createComment(CommentDto commentDto, long itemId, long userId) {
         User user = userRepository.findById(userId).orElseThrow(notFoundException(USER_NOT_FOUND_MESSAGE));
         Item item = itemRepository.findById(itemId).orElseThrow(notFoundException(USER_NOT_FOUND_MESSAGE));
-        // todo: ne rabotaet kakogo to huya
+
         if (bookingRepository.countByBooker_IdAndStatusAndEndBefore(userId, BookingStatus.APPROVED, LocalDateTime.now()) == 0) {
-            throw new RuntimeException("zalupa");
+            throw new NotAvailableItemException("Вещи не найдены или недоступны для пользователя.");
         }
-//        bookingRepository.findAllByBooker_Id(itemId).stream()
-//                .filter(booking -> Objects.equals(booking.getBooker().getId(), userId)
-//                        && (LocalDateTime.now().isAfter(booking.getEnd()) && booking.getStatus() == BookingStatus.APPROVED))
-//                .findAny().orElseThrow(notFoundException("NE NAIDENO!!!"));
 
         Comment comment = CommentMapper.mapToModel(commentDto, item, user);
         comment = commentRepository.save(comment);
