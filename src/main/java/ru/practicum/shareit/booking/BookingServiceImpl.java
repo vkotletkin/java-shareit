@@ -17,7 +17,6 @@ import ru.practicum.shareit.user.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static ru.practicum.shareit.exception.NotFoundException.notFoundException;
 
@@ -49,6 +48,8 @@ public class BookingServiceImpl implements BookingService {
         }
         Booking booking = BookingMapper.mapToModel(bookingInputRequest, user, item);
         booking = bookingRepository.save(booking);
+        item.setRequestId(booking.getId());
+        itemRepository.save(item);
         return BookingMapper.mapToDto(booking);
     }
 

@@ -2,10 +2,8 @@ package ru.practicum.shareit.item;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import ru.practicum.shareit.user.User;
 
 import java.util.Collection;
-import java.util.Optional;
 
 public interface ItemRepository extends JpaRepository<Item, Long> {
 
@@ -17,7 +15,6 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
             """)
     Collection<Item> findTextNameAndDescription(String text);
 
-    Optional<Item> findByIdAndAvailableTrue(long itemId);
 
     long countItemsByOwnerIdEquals(long userId);
 }

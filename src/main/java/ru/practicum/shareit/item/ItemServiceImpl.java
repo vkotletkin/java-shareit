@@ -6,9 +6,11 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemEnrichedDto;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -22,6 +24,7 @@ import static ru.practicum.shareit.exception.NotFoundException.notFoundException
 public class ItemServiceImpl implements ItemService {
 
     private static final String USER_NOT_FOUND_MESSAGE = "Пользователь с идентификатором {0} не найден";
+    private static final String BOOKING_NOT_FOUND_MESSAGE = "Бронирование с идентификатором {0} не найдено";
 
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
@@ -39,15 +42,31 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public Collection<ItemDto> findAllItemsByUser(long userId) {
         User user = userRepository.findById(userId).orElseThrow(notFoundException(USER_NOT_FOUND_MESSAGE));
-        Collection<Item> items = itemRepository.findByOwnerIdEquals(user.getId());
-    //    List<Booking> bookings = itemRepository.findAllById();
         return itemRepository.findByOwnerIdEquals(user.getId())
                 .stream().map(ItemMapper::mapToDto).collect(Collectors.toList());
     }
 
     @Override
-    public ItemDto findById(long id) {
-        return ItemMapper.mapToDto(itemRepository.findById(id).orElseThrow(notFoundException(USER_NOT_FOUND_MESSAGE)));
+    public ItemEnrichedDto findById(long id) {
+        // TODO: refactoring
+        Item item = itemRepository.findById(id).orElseThrow(notFoundException(USER_NOT_FOUND_MESSAGE, id));
+        List<Booking> bookings = bookingRepository.findAllByItem_Id(id);
+        if (bookings.isEmpty()) {
+            return ItemMapper.mapToEnrichedDto(item);
+        }
+
+        Booking lastBooking = bookings.stream()
+                .filter(t -> t.getEnd().isAfter(LocalDateTime.now())).findFirst().orElse(null);
+
+        if (lastBooking == null) {
+            return ItemMapper.mapToEnrichedDto(item);
+        }
+
+        LocalDateTime nextBooking = bookings.stream()
+                .map(Booking::getStart)
+                .filter(u -> u.isAfter(lastBooking.getEnd())).findFirst().orElse(null);
+
+        return ItemMapper.mapToDto(item, lastBooking.getEnd(), nextBooking);
     }
 
     @Override

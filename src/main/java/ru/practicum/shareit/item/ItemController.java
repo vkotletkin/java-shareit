@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemEnrichedDto;
 
 import java.util.Collection;
 
@@ -32,7 +33,7 @@ public class ItemController {
     }
 
     @GetMapping(ENDPOINT_PATH_ID)
-    public ItemDto findById(@PathVariable(name = "id") final Long itemId) {
+    public ItemEnrichedDto findById(@PathVariable(name = "id") final Long itemId) {
         return service.findById(itemId);
     }
 

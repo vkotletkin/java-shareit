@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Data
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ItemBookingDto {
+public class ItemEnrichedDto {
     Long id;
 
     @NotBlank
@@ -25,7 +25,12 @@ public class ItemBookingDto {
     Boolean available;
 
     Long ownerId;
+
     Long requestId;
+
     LocalDateTime lastBooking;
+
     LocalDateTime nextBooking;
+
+    // Set<Comment> comments;
 }
