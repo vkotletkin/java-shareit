@@ -15,8 +15,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     @EntityGraph(type = EntityGraph.EntityGraphType.LOAD, attributePaths = {"item", "booker"})
     List<Booking> findByBooker_Id(long userId, Sort sort);
 
-    long countByBooker_IdAndStatus(long userId, BookingStatus status);
-
     @EntityGraph(type = EntityGraph.EntityGraphType.LOAD, attributePaths = {"item", "booker"})
     List<Booking> findByBooker_IdAndStartBeforeAndEndAfter(Long bookerId, LocalDateTime startBefore, LocalDateTime endAfter, Sort sort);
 
@@ -44,5 +42,5 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     @EntityGraph(type = EntityGraph.EntityGraphType.LOAD, attributePaths = {"item", "booker"})
     List<Booking> findAllByItem_Id(long id);
 
-    Long countByBooker_IdAndStatusAndEndBefore(Long booker_id, BookingStatus status, LocalDateTime end);
+    Long countByBooker_IdAndStatusAndEndBefore(Long bookerId, BookingStatus status, LocalDateTime end);
 }
