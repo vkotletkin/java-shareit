@@ -1,5 +1,6 @@
 package ru.practicum.shareit.booking.dto;
 
+import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -17,11 +18,11 @@ public class BookingInputRequest {
     Long id;
 
     @NotNull
-    @FutureOrPresent(message = "Дата должна быть в настоящем или будущем")
+    @Future(message = "Дата должна быть в настоящем или будущем")
     LocalDateTime start;
 
     @NotNull
-    @FutureOrPresent(message = "Дата должна быть в настоящем или будущем")
+    @Future(message = "Дата должна быть в настоящем или будущем")
     LocalDateTime end;
 
     @NotNull

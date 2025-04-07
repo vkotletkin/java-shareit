@@ -1,5 +1,6 @@
 package ru.practicum.shareit.item;
 
+import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemEnrichedDto;
 
@@ -15,4 +16,6 @@ public interface ItemService {
     ItemDto update(ItemDto itemDto);
 
     Collection<ItemDto> findByText(String text);
+
+    CommentDto createComment(CommentDto commentDto, long itemId, long userId);
 }

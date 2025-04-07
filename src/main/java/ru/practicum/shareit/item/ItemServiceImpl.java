@@ -5,8 +5,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingRepository;
+import ru.practicum.shareit.booking.BookingStatus;
+import ru.practicum.shareit.item.dal.CommentRepository;
+import ru.practicum.shareit.item.dal.ItemRepository;
+import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemEnrichedDto;
+import ru.practicum.shareit.item.mapper.CommentMapper;
+import ru.practicum.shareit.item.mapper.ItemMapper;
+import ru.practicum.shareit.item.model.Comment;
+import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
 
@@ -29,6 +37,7 @@ public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
     private final BookingRepository bookingRepository;
+    private final CommentRepository commentRepository;
 
     @Override
     @Transactional
@@ -38,6 +47,7 @@ public class ItemServiceImpl implements ItemService {
         item = itemRepository.save(item);
         return ItemMapper.mapToDto(item);
     }
+
 
     @Override
     public Collection<ItemDto> findAllItemsByUser(long userId) {
@@ -54,7 +64,6 @@ public class ItemServiceImpl implements ItemService {
         if (bookings.isEmpty()) {
             return ItemMapper.mapToEnrichedDto(item);
         }
-
         Booking lastBooking = bookings.stream()
                 .filter(t -> t.getEnd().isAfter(LocalDateTime.now())).findFirst().orElse(null);
 
@@ -66,8 +75,10 @@ public class ItemServiceImpl implements ItemService {
                 .map(Booking::getStart)
                 .filter(u -> u.isAfter(lastBooking.getEnd())).findFirst().orElse(null);
 
+
         return ItemMapper.mapToDto(item, lastBooking.getEnd(), nextBooking);
     }
+
 
     @Override
     public ItemDto update(ItemDto itemDto) {
@@ -86,6 +97,25 @@ public class ItemServiceImpl implements ItemService {
         } // TODO: что это!!!
         return itemRepository.findTextNameAndDescription(text)
                 .stream().filter(Item::getAvailable).map(ItemMapper::mapToDto).collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public CommentDto createComment(CommentDto commentDto, long itemId, long userId) {
+        User user = userRepository.findById(userId).orElseThrow(notFoundException(USER_NOT_FOUND_MESSAGE));
+        Item item = itemRepository.findById(itemId).orElseThrow(notFoundException(USER_NOT_FOUND_MESSAGE));
+        // todo: ne rabotaet kakogo to huya
+        if (bookingRepository.countByBooker_IdAndStatusAndEndBefore(userId, BookingStatus.APPROVED, LocalDateTime.now()) == 0) {
+            throw new RuntimeException("zalupa");
+        }
+//        bookingRepository.findAllByBooker_Id(itemId).stream()
+//                .filter(booking -> Objects.equals(booking.getBooker().getId(), userId)
+//                        && (LocalDateTime.now().isAfter(booking.getEnd()) && booking.getStatus() == BookingStatus.APPROVED))
+//                .findAny().orElseThrow(notFoundException("NE NAIDENO!!!"));
+
+        Comment comment = CommentMapper.mapToModel(commentDto, item, user);
+        comment = commentRepository.save(comment);
+        return CommentMapper.mapToDto(comment);
     }
 
     private Item update(Item oldFilm, Item newFilm) {

@@ -6,7 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 public interface BookingRepository extends JpaRepository<Booking, Long> {
 
@@ -15,6 +14,8 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     @EntityGraph(type = EntityGraph.EntityGraphType.LOAD, attributePaths = {"item", "booker"})
     List<Booking> findByBooker_Id(long userId, Sort sort);
+
+    long countByBooker_IdAndStatus(long userId, BookingStatus status);
 
     @EntityGraph(type = EntityGraph.EntityGraphType.LOAD, attributePaths = {"item", "booker"})
     List<Booking> findByBooker_IdAndStartBeforeAndEndAfter
@@ -28,9 +29,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     @EntityGraph(type = EntityGraph.EntityGraphType.LOAD, attributePaths = {"item", "booker"})
     List<Booking> findByItem_Owner_Id(long userId, Sort sortByStart);
-
-    @EntityGraph(type = EntityGraph.EntityGraphType.LOAD, attributePaths = {"item", "booker"})
-    List<Booking> findByItem_Owner_Id(long userId);
 
     @EntityGraph(type = EntityGraph.EntityGraphType.LOAD, attributePaths = {"item", "booker"})
     List<Booking> findByItem_Owner_IdAndStartBeforeAndEndAfter
@@ -47,4 +45,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     @EntityGraph(type = EntityGraph.EntityGraphType.LOAD, attributePaths = {"item", "booker"})
     List<Booking> findAllByItem_Id(long id);
+
+    Long countByBooker_IdAndStatusAndEndBefore(Long booker_id, BookingStatus status, LocalDateTime end);
 }

@@ -6,32 +6,19 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
-import ru.practicum.shareit.item.model.Comment;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Set;
 
 @Data
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ItemEnrichedDto {
+public class CommentDto {
     Long id;
 
     @NotBlank
-    String name;
+    String text;
 
-    @NotBlank
-    String description;
+    String authorName;
 
-    @NotNull
-    Boolean available;
-
-    Long ownerId;
-
-    Long requestId;
-
-    LocalDateTime lastBooking;
-
-    LocalDateTime nextBooking;
+    LocalDateTime created;
 }
