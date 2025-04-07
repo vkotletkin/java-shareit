@@ -44,7 +44,7 @@ public class BookingController {
 
     @GetMapping("/owner")
     public List<BookingDto> getAllBookingsOfUserItems(@RequestParam(defaultValue = "ALL") BookingState state,
-                                                     @RequestHeader(name = USER_IDENTIFICATOR_HEADER_NAME) long userId) {
+                                                      @RequestHeader(name = USER_IDENTIFICATOR_HEADER_NAME) long userId) {
         return service.getAllBookingsOfUserItems(state, userId);
     }
 }

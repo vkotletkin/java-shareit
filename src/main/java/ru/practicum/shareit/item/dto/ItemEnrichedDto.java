@@ -6,11 +6,9 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
-import ru.practicum.shareit.item.model.Comment;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 
 @Data
 @Builder
@@ -34,4 +32,6 @@ public class ItemEnrichedDto {
     LocalDateTime lastBooking;
 
     LocalDateTime nextBooking;
+
+    List<String> comments;
 }

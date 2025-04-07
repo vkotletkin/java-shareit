@@ -10,8 +10,8 @@ import ru.practicum.shareit.exception.IncorrectOwnerException;
 import ru.practicum.shareit.exception.NotAvailableItemException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.StartAfterEndException;
-import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.dal.ItemRepository;
+import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
 

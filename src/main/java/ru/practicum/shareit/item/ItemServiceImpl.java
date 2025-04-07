@@ -61,14 +61,16 @@ public class ItemServiceImpl implements ItemService {
         // TODO: refactoring
         Item item = itemRepository.findById(id).orElseThrow(notFoundException(USER_NOT_FOUND_MESSAGE, id));
         List<Booking> bookings = bookingRepository.findAllByItem_Id(id);
+        List<String> comments = commentRepository.findByItem_Id(id).stream().map(Comment::getText).toList();
+
         if (bookings.isEmpty()) {
-            return ItemMapper.mapToEnrichedDto(item);
+            return ItemMapper.mapToEnrichedDto(item, comments);
         }
         Booking lastBooking = bookings.stream()
                 .filter(t -> t.getEnd().isAfter(LocalDateTime.now())).findFirst().orElse(null);
 
         if (lastBooking == null) {
-            return ItemMapper.mapToEnrichedDto(item);
+            return ItemMapper.mapToEnrichedDto(item, comments);
         }
 
         LocalDateTime nextBooking = bookings.stream()
@@ -76,7 +78,7 @@ public class ItemServiceImpl implements ItemService {
                 .filter(u -> u.isAfter(lastBooking.getEnd())).findFirst().orElse(null);
 
 
-        return ItemMapper.mapToDto(item, lastBooking.getEnd(), nextBooking);
+        return ItemMapper.mapToDto(item, lastBooking.getEnd(), nextBooking, comments);
     }
 
 
