@@ -42,7 +42,8 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional
     public ItemDto create(ItemDto itemDto) {
-        User user = userRepository.findById(itemDto.getOwnerId()).orElseThrow(notFoundException(USER_NOT_FOUND_MESSAGE));
+        User user = userRepository.findById(itemDto.getOwnerId())
+                .orElseThrow(notFoundException(USER_NOT_FOUND_MESSAGE, itemDto.getOwnerId()));
         Item item = ItemMapper.mapToModel(itemDto, user);
         item = itemRepository.save(item);
         return ItemMapper.mapToDto(item);
@@ -78,9 +79,11 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto update(ItemDto itemDto) {
-        User user = userRepository.findById(itemDto.getOwnerId()).orElseThrow(notFoundException(USER_NOT_FOUND_MESSAGE));
+        User user = userRepository.findById(itemDto.getOwnerId())
+                .orElseThrow(notFoundException(USER_NOT_FOUND_MESSAGE, itemDto.getOwnerId()));
         Item item = ItemMapper.mapToModel(itemDto, user);
-        Item oldItem = itemRepository.findById(item.getId()).orElseThrow(notFoundException(USER_NOT_FOUND_MESSAGE));
+        Item oldItem = itemRepository.findById(item.getId())
+                .orElseThrow(notFoundException(USER_NOT_FOUND_MESSAGE, item.getId()));
         Item result = update(oldItem, item);
         itemRepository.save(result);
         return ItemMapper.mapToDto(result);
@@ -98,8 +101,8 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional
     public CommentDto createComment(CommentDto commentDto, long itemId, long userId) {
-        User user = userRepository.findById(userId).orElseThrow(notFoundException(USER_NOT_FOUND_MESSAGE));
-        Item item = itemRepository.findById(itemId).orElseThrow(notFoundException(USER_NOT_FOUND_MESSAGE));
+        User user = userRepository.findById(userId).orElseThrow(notFoundException(USER_NOT_FOUND_MESSAGE, userId));
+        Item item = itemRepository.findById(itemId).orElseThrow(notFoundException(USER_NOT_FOUND_MESSAGE, itemId));
 
         if (bookingRepository.countByBooker_IdAndStatusAndEndBefore(userId, BookingStatus.APPROVED, LocalDateTime.now()) == 0) {
             throw new NotAvailableItemException("Вещи не найдены или недоступны для пользователя.");

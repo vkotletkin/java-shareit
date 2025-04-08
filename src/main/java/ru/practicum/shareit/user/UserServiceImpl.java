@@ -32,7 +32,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public UserDto update(UserDto userDto) {
         User user = UserMapper.mapToModel(userDto);
-        User oldUser = userRepository.findById(user.getId()).orElseThrow(notFoundException(USER_NOT_FOUND_MESSAGE));
+        User oldUser = userRepository.findById(user.getId()).orElseThrow(notFoundException(USER_NOT_FOUND_MESSAGE, user.getId()));
         User result = update(oldUser, user);
         checkExistEmail(result);
         userRepository.save(result);

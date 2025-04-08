@@ -44,7 +44,7 @@ public class BookingServiceImpl implements BookingService {
         User user = userRepository.findById(bookingInputRequest.getBookerId())
                 .orElseThrow(notFoundException(USER_NOT_FOUND_MESSAGE, bookingInputRequest.getBookerId()));
         if (!item.getAvailable()) {
-            throw new NotAvailableItemException(ITEM_NOT_AVAILABLE_MESSAGE, item);
+            throw new NotAvailableItemException(ITEM_NOT_AVAILABLE_MESSAGE, item.getId());
         }
         Booking booking = BookingMapper.mapToModel(bookingInputRequest, user, item);
         booking = bookingRepository.save(booking);
@@ -112,7 +112,7 @@ public class BookingServiceImpl implements BookingService {
         List<Booking> bookings = switch (state) {
             case ALL -> bookingRepository.findByItem_Owner_Id(userId, sortByStart);
             case CURRENT ->
-                    bookingRepository.findByItem_Owner_IdAndStartBeforeAndEndAfter(userId, nowTimestamp, nowTimestamp, sortByStart); // todo: change!!! all
+                    bookingRepository.findByItem_Owner_IdAndStartBeforeAndEndAfter(userId, nowTimestamp, nowTimestamp, sortByStart);
             case PAST -> bookingRepository.findByItem_Owner_IdAndEndBefore(userId, nowTimestamp, sortByStart);
             case FUTURE -> bookingRepository.findByItem_Owner_IdAndStartAfter(userId, nowTimestamp, sortByStart);
             case WAITING -> bookingRepository.findByItem_Owner_IdAndStatus(userId, BookingStatus.WAITING, sortByStart);
