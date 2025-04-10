@@ -51,7 +51,7 @@ public class ExceptionsGlobalHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler
     public ValidationErrorResponse handleOnMethodArgumentNotValidException(
-            MethodArgumentNotValidException e) {
+            final MethodArgumentNotValidException e) {
         final List<BaseErrorResponse> errorResponses = e.getBindingResult().getFieldErrors().stream()
                 .map(error -> new BaseErrorResponse(error.getField(), error.getDefaultMessage()))
                 .toList();
@@ -63,15 +63,29 @@ public class ExceptionsGlobalHandler {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler
-    public BaseErrorResponse handleMissingRequestHeaderException(MissingRequestHeaderException e) {
+    public BaseErrorResponse handleMissingRequestHeaderException(final MissingRequestHeaderException e) {
         log.error(e.getMessage());
         return new BaseErrorResponse("Ошибка передачи заголовка.", e.getHeaderName());
     }
 
-    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler
-    public BaseErrorResponse handleIncorrectOwnerException(IncorrectOwnerException e) {
+    public BaseErrorResponse handleIncorrectOwnerException(final IncorrectOwnerException e) {
         log.error(e.getMessage());
         return new BaseErrorResponse("Ошибка при передаче идентификатора владельца предмета", e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler
+    public BaseErrorResponse handleStartAfterEndException(final StartAfterEndException e) {
+        log.error(e.getMessage());
+        return new BaseErrorResponse("Ошибка при передаче временных промежутков", e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler
+    public BaseErrorResponse handleNotAvailableItemException(final NotAvailableItemException e) {
+        log.error(e.getMessage());
+        return new BaseErrorResponse("Ошибка при получении предмета", e.getMessage());
     }
 }

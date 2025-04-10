@@ -4,7 +4,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemEnrichedDto;
 
 import java.util.Collection;
 
@@ -28,11 +30,11 @@ public class ItemController {
 
     @GetMapping
     public Collection<ItemDto> findAllOnUser(@RequestHeader(name = USER_IDENTIFICATOR_HEADER_NAME) Long userId) {
-        return service.findAllOnUser(userId);
+        return service.findAllItemsByUser(userId);
     }
 
     @GetMapping(ENDPOINT_PATH_ID)
-    public ItemDto findById(@PathVariable(name = "id") final Long itemId) {
+    public ItemEnrichedDto findById(@PathVariable(name = "id") final Long itemId) {
         return service.findById(itemId);
     }
 
@@ -46,8 +48,13 @@ public class ItemController {
     }
 
     @GetMapping("/search")
-    public Collection<ItemDto> search(@RequestParam(name = "text") String text,
-                                      @RequestHeader(name = USER_IDENTIFICATOR_HEADER_NAME) Long userId) {
-        return service.findByText(text, userId);
+    public Collection<ItemDto> search(@RequestParam(name = "text") String text) {
+        return service.findByText(text);
+    }
+
+    @PostMapping(ENDPOINT_PATH_ID + "/comment")
+    public CommentDto createComment(@RequestBody CommentDto commentDto,
+                                    @RequestHeader(name = USER_IDENTIFICATOR_HEADER_NAME) Long userId, @PathVariable(name = "id") Long itemId) {
+        return service.createComment(commentDto, itemId, userId);
     }
 }
