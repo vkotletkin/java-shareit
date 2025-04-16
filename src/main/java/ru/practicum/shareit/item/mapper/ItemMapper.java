@@ -9,6 +9,7 @@ import ru.practicum.shareit.user.User;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ItemMapper {
@@ -33,6 +34,12 @@ public class ItemMapper {
                 .ownerId(item.getOwner().getId())
                 .requestId(item.getRequestId())
                 .build();
+    }
+
+    public static List<ItemDto> mapToDto(List<Item> items) {
+        return items.stream()
+                .map(ItemMapper::mapToDto)
+                .collect(Collectors.toList());
     }
 
     public static ItemEnrichedDto mapToEnrichedDto(Item item, List<String> comments) {
