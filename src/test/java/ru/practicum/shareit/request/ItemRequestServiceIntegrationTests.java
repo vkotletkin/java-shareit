@@ -27,6 +27,7 @@ public class ItemRequestServiceIntegrationTests {
 
     private final ItemRequestService service;
     private final UserRepository userRepository;
+
     private ItemRequestDto itemRequestDto;
     private User userBase;
 

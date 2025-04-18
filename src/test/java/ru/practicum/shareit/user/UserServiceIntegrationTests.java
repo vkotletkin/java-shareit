@@ -21,6 +21,7 @@ import static org.hamcrest.Matchers.notNullValue;
 public class UserServiceIntegrationTests {
 
     private final UserService userService;
+
     private UserDto userDto;
 
     @BeforeEach
@@ -33,6 +34,7 @@ public class UserServiceIntegrationTests {
 
     @Test
     public void testSaveUser() {
+
         UserDto userDtoNew = userService.create(userDto);
 
         assertThat(userDtoNew.getId(), notNullValue());
@@ -42,6 +44,7 @@ public class UserServiceIntegrationTests {
 
     @Test
     public void testFindUser() {
+
         userDto = userService.create(userDto);
 
         UserDto userDtoNew = userService.findById(userDto.getId());

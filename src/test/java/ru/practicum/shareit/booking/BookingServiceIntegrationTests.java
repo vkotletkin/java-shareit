@@ -62,6 +62,7 @@ public class BookingServiceIntegrationTests {
 
     @Test
     public void testSaveBookingInputRequest() {
+
         user = userRepository.save(user);
         item = itemRepository.save(item);
 
@@ -78,6 +79,7 @@ public class BookingServiceIntegrationTests {
 
     @Test
     public void testGetSpecificBooking() {
+
         user = userRepository.save(user);
         item = itemRepository.save(item);
 
