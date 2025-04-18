@@ -32,10 +32,9 @@ public class BookingServiceIntegrationTests {
     private final ItemRepository itemRepository;
     private final BookingService bookingService;
 
+    private BookingInputRequest bookingInputRequest;
     private User user;
     private Item item;
-    private BookingInputRequest bookingInputRequest;
-
 
     @BeforeEach
     public void setUp() {
