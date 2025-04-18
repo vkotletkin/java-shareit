@@ -1,10 +1,7 @@
 package ru.practicum.shareit.user;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 
@@ -12,6 +9,9 @@ import lombok.experimental.FieldDefaults;
 @Setter
 @ToString
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @Table(name = "users", schema = "public")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class User {
