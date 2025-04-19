@@ -8,8 +8,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemEnrichedDto;
 
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.hamcrest.Matchers.is;
@@ -25,6 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(ItemController.class)
 public class ItemControllerTests {
 
+    private static final String ENDPOINT_PATH_ID = "/{id}";
     public static String ITEMS_ENDPOINT = "/items";
     public static String USER_IDENTIFICATOR_HEADER_NAME = "X-Sharer-User-Id";
 
@@ -34,6 +37,17 @@ public class ItemControllerTests {
             .description("Test item description")
             .available(true)
             .ownerId(1L)
+            .build();
+
+    private final ItemEnrichedDto itemEnrichedDto = ItemEnrichedDto.builder()
+            .id(1L)
+            .name("Test item name")
+            .description("Test item description")
+            .available(true)
+            .ownerId(1L)
+            .lastBooking(LocalDateTime.of(1980, 1, 1, 0, 0, 0))
+            .nextBooking(LocalDateTime.of(1980, 1, 2, 0, 0, 0))
+            .comments(List.of("Test item comment"))
             .build();
 
     @Autowired
@@ -95,22 +109,37 @@ public class ItemControllerTests {
     }
 
     @Test
-    public void testFindById() {
+    public void testFindById() throws Exception {
+        when(itemService.findById(anyLong())).thenReturn(itemEnrichedDto);
+
+        mvc.perform(get(ITEMS_ENDPOINT + ENDPOINT_PATH_ID, itemEnrichedDto.getId())
+                        .content(mapper.writeValueAsString(itemEnrichedDto))
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .header(USER_IDENTIFICATOR_HEADER_NAME, 1))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name", is(itemEnrichedDto.getName())))
+                .andExpect(jsonPath("$.available", is(itemEnrichedDto.getAvailable())))
+                .andExpect(jsonPath("$.ownerId", is(itemEnrichedDto.getOwnerId().intValue())))
+                .andExpect(jsonPath("$.description", is(itemEnrichedDto.getDescription())))
+                .andExpect(jsonPath("$.comments", is(itemEnrichedDto.getComments())))
+                .andExpect(jsonPath("$.nextBooking").exists())
+                .andExpect(jsonPath("$.lastBooking").exists());
+    }
+
+    @Test
+    public void testItemUpdate() throws Exception {
 
     }
 
     @Test
-    public void testItemUpdate() {
+    public void testSearchItem() throws Exception {
 
     }
 
     @Test
-    public void testSearchItem() {
-
-    }
-
-    @Test
-    public void testCreateComment() {
+    public void testCreateComment() throws Exception {
 
     }
 }
