@@ -70,8 +70,8 @@ public class ItemRequestServiceIntegrationTests {
         ItemRequestDto itemRequestDto1 = service.findItemRequestById(itemRequestDtoSave.getId());
 
         assertThat(itemRequestDto1.getId(), notNullValue());
-        assertThat(itemRequestDto1.getDescription(), equalTo(itemRequestDto.getDescription()));
-        assertThat(itemRequestDto1.getCreated(), equalTo(itemRequestDto.getCreated()));
-        assertThat(itemRequestDto1.getRequestor(), equalTo(itemRequestDto.getRequestor()));
+        assertThat(itemRequestDto1.getDescription(), equalTo(itemRequestDtoSave.getDescription()));
+        assertThat(itemRequestDto1.getCreated(), equalTo(itemRequestDtoSave.getCreated()));
+        assertThat(itemRequestDto1.getRequestor(), equalTo(itemRequestDtoSave.getRequestor()));
     }
 }
