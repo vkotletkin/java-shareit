@@ -17,7 +17,6 @@ public class UserServiceUnitTests {
     @Mock
     private UserService userService;
 
-
     private UserDto userDto;
 
     @BeforeEach
