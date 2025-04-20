@@ -41,6 +41,7 @@ public class UserControllerTests {
 
     @Test
     public void testUserCreate() throws Exception {
+
         when(userService.create(any())).thenReturn(userDto);
 
         mvc.perform(post(USERS_ENDPOINT)
@@ -55,6 +56,7 @@ public class UserControllerTests {
 
     @Test
     public void testUserUpdate() throws Exception {
+
         when(userService.update(any())).thenReturn(userDto);
 
         mvc.perform(patch(USERS_ENDPOINT + "/" + userDto.getId())
@@ -70,6 +72,7 @@ public class UserControllerTests {
 
     @Test
     public void testFindById() throws Exception {
+
         when(userService.findById(anyLong())).thenReturn(userDto);
 
         mvc.perform(get(USERS_ENDPOINT + "/" + userDto.getId())
@@ -85,6 +88,7 @@ public class UserControllerTests {
 
     @Test
     public void testDeleteById() throws Exception {
+
         BaseResponse baseResponse = new BaseResponse("User is deleted");
         when(userService.delete(anyLong())).thenReturn(baseResponse);
 

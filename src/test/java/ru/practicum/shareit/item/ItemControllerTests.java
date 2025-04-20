@@ -127,19 +127,4 @@ public class ItemControllerTests {
                 .andExpect(jsonPath("$.nextBooking").exists())
                 .andExpect(jsonPath("$.lastBooking").exists());
     }
-
-    @Test
-    public void testItemUpdate() throws Exception {
-
-    }
-
-    @Test
-    public void testSearchItem() throws Exception {
-
-    }
-
-    @Test
-    public void testCreateComment() throws Exception {
-
-    }
 }
