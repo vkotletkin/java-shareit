@@ -28,6 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ItemControllerTests {
 
     private static final String ENDPOINT_PATH_ID = "/{id}";
+
     public static String ITEMS_ENDPOINT = "/items";
     public static String USER_IDENTIFICATOR_HEADER_NAME = "X-Sharer-User-Id";
 
