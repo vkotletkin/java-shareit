@@ -33,27 +33,11 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class ItemServiceUnitTests {
 
-    @Mock
-    private ItemRepository itemRepository;
-
-    @Mock
-    private UserRepository userRepository;
-
-    @Mock
-    private BookingRepository bookingRepository;
-
-    @Mock
-    private CommentRepository commentRepository;
-
-    @InjectMocks
-    private ItemServiceImpl itemService;
-
     private final User testUser = User.builder()
             .id(1L)
             .name("Test User")
             .email("test@example.com")
             .build();
-
     private final Item testItem = Item.builder()
             .id(1L)
             .name("Test Item")
@@ -61,7 +45,6 @@ public class ItemServiceUnitTests {
             .available(true)
             .owner(testUser)
             .build();
-
     private final ItemDto testItemDto = ItemDto.builder()
             .id(1L)
             .name("Test Item")
@@ -69,12 +52,21 @@ public class ItemServiceUnitTests {
             .available(true)
             .ownerId(1L)
             .build();
-
     private final CommentDto testCommentDto = CommentDto.builder()
             .id(1L)
             .text("Test Comment")
             .authorName("Test User")
             .build();
+    @Mock
+    private ItemRepository itemRepository;
+    @Mock
+    private UserRepository userRepository;
+    @Mock
+    private BookingRepository bookingRepository;
+    @Mock
+    private CommentRepository commentRepository;
+    @InjectMocks
+    private ItemServiceImpl itemService;
 
     @Test
     void findAllItemsByUser_shouldReturnItemsWhenUserExists() {
@@ -236,5 +228,52 @@ public class ItemServiceUnitTests {
         verify(bookingRepository, times(1))
                 .countByBooker_IdAndStatusAndEndBefore(anyLong(), any(), any());
         verify(commentRepository, never()).save(any(Comment.class));
+    }
+
+    @Test
+    void createComment_shouldCreateCommentWhenValid() {
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(testUser));
+        when(itemRepository.findById(anyLong())).thenReturn(Optional.of(testItem));
+        when(bookingRepository.countByBooker_IdAndStatusAndEndBefore(anyLong(), any(), any()))
+                .thenReturn(1L);
+        when(commentRepository.save(any(Comment.class))).thenAnswer(invocation -> {
+            Comment comment = invocation.getArgument(0);
+            comment.setId(1L);
+            return comment;
+        });
+
+        CommentDto result = itemService.createComment(testCommentDto, 1L, 1L);
+
+        assertNotNull(result);
+        assertEquals(testCommentDto.getText(), result.getText());
+        verify(userRepository, times(1)).findById(anyLong());
+        verify(itemRepository, times(1)).findById(anyLong());
+        verify(bookingRepository, times(1))
+                .countByBooker_IdAndStatusAndEndBefore(anyLong(), any(), any());
+        verify(commentRepository, times(1)).save(any(Comment.class));
+    }
+
+    @Test
+    void findById_shouldReturnItemWithComments() {
+        Comment testComment = Comment.builder()
+                .id(1L)
+                .text("Test Comment")
+                .item(testItem)
+                .user(testUser)
+                .created(LocalDateTime.now())
+                .build();
+
+        when(itemRepository.findById(anyLong())).thenReturn(Optional.of(testItem));
+        when(bookingRepository.findAllByItem_Id(anyLong())).thenReturn(Collections.emptyList());
+        when(commentRepository.findByItem_Id(anyLong())).thenReturn(List.of(testComment));
+
+        ItemEnrichedDto result = itemService.findById(1L);
+
+        assertNotNull(result);
+        assertFalse(result.getComments().isEmpty());
+        assertEquals(testComment.getText(), result.getComments().get(0));
+        verify(itemRepository, times(1)).findById(anyLong());
+        verify(bookingRepository, times(1)).findAllByItem_Id(anyLong());
+        verify(commentRepository, times(1)).findByItem_Id(anyLong());
     }
 }
