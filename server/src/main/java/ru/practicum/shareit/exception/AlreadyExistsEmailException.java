@@ -12,10 +12,6 @@ public class AlreadyExistsEmailException extends RuntimeException {
         super(MessageFormat.format(message, args));
     }
 
-    public static Supplier<AlreadyExistsEmailException> alreadyExistsEmailException(String message, Object... args) {
-        return () -> new AlreadyExistsEmailException(message, args);
-    }
-
     public static Supplier<AlreadyExistsEmailException> alreadyExistsEmailException(String message) {
         return () -> new AlreadyExistsEmailException(message);
     }

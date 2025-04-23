@@ -12,10 +12,6 @@ public class IncorrectOwnerException extends RuntimeException {
         super(MessageFormat.format(message, args));
     }
 
-    public static Supplier<IncorrectOwnerException> incorrectOwnerException(String message, Object... args) {
-        return () -> new IncorrectOwnerException(message, args);
-    }
-
     public static Supplier<IncorrectOwnerException> incorrectOwnerException(String message) {
         return () -> new IncorrectOwnerException(message);
     }

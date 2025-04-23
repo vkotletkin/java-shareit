@@ -88,4 +88,41 @@ public class UserTests {
         assertFalse(emailColumn.nullable());
         assertTrue(emailColumn.unique());
     }
+
+    @Test
+    void equals_ShouldReturnFalseForDifferentIds() {
+        User user1 = User.builder().id(1L).build();
+        User user2 = User.builder().id(2L).build();
+
+        assertNotEquals(user1, user2);
+    }
+
+    @Test
+    void equals_ShouldReturnFalseForNull() {
+        User user = User.builder().id(1L).build();
+
+        assertNotEquals(null, user);
+    }
+
+    @Test
+    void equals_ShouldReturnFalseForDifferentClass() {
+        User user = User.builder().id(1L).build();
+
+        assertNotEquals(user, new Object());
+    }
+
+    @Test
+    void equals_ShouldReturnTrueForSameInstance() {
+        User user = User.builder().id(1L).build();
+
+        assertEquals(user, user);
+    }
+
+    @Test
+    void hashCode_ShouldBeConsistent() {
+        User user = User.builder().id(1L).build();
+        int initialHashCode = user.hashCode();
+
+        assertEquals(initialHashCode, user.hashCode());
+    }
 }
