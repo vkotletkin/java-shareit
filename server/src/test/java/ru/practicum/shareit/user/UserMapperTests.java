@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class UserMapperTests {
 
     @Test
-    void mapToModel_shouldMapDtoToModel() {
+    void mapToModelShouldMapDtoToModel() {
         UserDto dto = UserDto.builder()
                 .id(1L)
                 .name("test")
@@ -22,7 +22,7 @@ class UserMapperTests {
     }
 
     @Test
-    void mapToDto_shouldMapModelToDto() {
+    void mapToDtoShouldMapModelToDto() {
         User user = User.builder()
                 .id(1L)
                 .name("test")

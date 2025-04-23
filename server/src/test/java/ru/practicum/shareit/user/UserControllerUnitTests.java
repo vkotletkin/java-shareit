@@ -21,7 +21,7 @@ class UserControllerUnitTests {
     private UserController userController;
 
     @Test
-    void create_shouldCallServiceAndReturnDto() {
+    void createShouldCallServiceAndReturnDto() {
         UserDto inputDto = UserDto.builder().name("test").email("test@test.com").build();
         UserDto outputDto = UserDto.builder().id(1L).name("test").email("test@test.com").build();
 
@@ -34,7 +34,7 @@ class UserControllerUnitTests {
     }
 
     @Test
-    void findById_shouldCallServiceAndReturnDto() {
+    void findByIdShouldCallServiceAndReturnDto() {
         long userId = 1L;
         UserDto expectedDto = UserDto.builder().id(userId).name("test").email("test@test.com").build();
 
@@ -47,7 +47,7 @@ class UserControllerUnitTests {
     }
 
     @Test
-    void update_shouldCallServiceAndReturnDto() {
+    void updateShouldCallServiceAndReturnDto() {
         long userId = 1L;
         UserDto inputDto = UserDto.builder().name("updated").build();
         UserDto outputDto = UserDto.builder().id(userId).name("updated").email("test@test.com").build();
@@ -61,7 +61,7 @@ class UserControllerUnitTests {
     }
 
     @Test
-    void delete_shouldCallServiceAndReturnResponse() {
+    void deleteShouldCallServiceAndReturnResponse() {
         long userId = 1L;
         BaseResponse expectedResponse = new BaseResponse("User deleted");
 

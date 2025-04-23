@@ -62,6 +62,7 @@ public class ItemControllerTests {
 
     @Test
     public void testItemCreate() throws Exception {
+
         when(itemService.create(any())).thenReturn(itemDto);
 
         mvc.perform(post(ITEMS_ENDPOINT)
@@ -86,6 +87,7 @@ public class ItemControllerTests {
 
     @Test
     public void testFindAllOnUser() throws Exception {
+
         when(itemService.findAllItemsByUser(anyLong())).thenReturn(List.of(itemDto));
 
         mvc.perform(get(ITEMS_ENDPOINT)
@@ -111,6 +113,7 @@ public class ItemControllerTests {
 
     @Test
     public void testFindById() throws Exception {
+
         when(itemService.findById(anyLong())).thenReturn(itemEnrichedDto);
 
         mvc.perform(get(ITEMS_ENDPOINT + ENDPOINT_PATH_ID, itemEnrichedDto.getId())

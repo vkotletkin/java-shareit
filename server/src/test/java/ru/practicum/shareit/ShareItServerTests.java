@@ -10,7 +10,6 @@ class ShareItServerTests {
 
     @Test
     void contextLoads() {
-        // Этот тест проверяет, что контекст Spring загружается корректно
         assertDoesNotThrow(() -> ShareItServer.main(new String[]{}));
     }
 }

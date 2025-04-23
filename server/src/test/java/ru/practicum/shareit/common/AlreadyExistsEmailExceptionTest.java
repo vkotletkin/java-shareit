@@ -14,6 +14,7 @@ class AlreadyExistsEmailExceptionTest {
 
     @Test
     void shouldCreateExceptionWithMessage() {
+
         String message = "Email already exists";
         AlreadyExistsEmailException exception = new AlreadyExistsEmailException(message);
 
@@ -22,6 +23,7 @@ class AlreadyExistsEmailExceptionTest {
 
     @Test
     void shouldCreateExceptionWithFormattedMessage() {
+
         String email = "test@example.com";
         String expectedMessage = "Email test@example.com already exists";
         AlreadyExistsEmailException exception = new AlreadyExistsEmailException(
@@ -32,6 +34,7 @@ class AlreadyExistsEmailExceptionTest {
 
     @Test
     void shouldCreateExceptionSupplier() {
+
         String message = "Email already exists";
         Supplier<AlreadyExistsEmailException> supplier =
                 AlreadyExistsEmailException.alreadyExistsEmailException(message);
@@ -42,6 +45,7 @@ class AlreadyExistsEmailExceptionTest {
 
     @Test
     void shouldHandleExceptionInGlobalHandler() {
+
         ExceptionsGlobalHandler handler = new ExceptionsGlobalHandler();
         String message = "Email conflict";
         AlreadyExistsEmailException exception = new AlreadyExistsEmailException(message);

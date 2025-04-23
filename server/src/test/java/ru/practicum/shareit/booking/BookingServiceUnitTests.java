@@ -89,14 +89,16 @@ class BookingServiceUnitTests {
     }
 
     @Test
-    void create_WhenItemNotFound_ShouldThrowNotFoundException() {
+    void testCreateWhenItemNotFoundShouldThrowNotFoundException() {
+
         when(itemRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         assertThrows(NotFoundException.class, () -> bookingService.create(bookingInputRequest));
     }
 
     @Test
-    void create_WhenStartAfterEnd_ShouldThrowStartAfterEndException() {
+    void testCreateWhenStartAfterEndShouldThrowStartAfterEndException() {
+
         bookingInputRequest.setStart(LocalDateTime.now().plusDays(2));
         bookingInputRequest.setEnd(LocalDateTime.now().plusDays(1));
 
@@ -104,7 +106,8 @@ class BookingServiceUnitTests {
     }
 
     @Test
-    void create_WhenStartEqualsEnd_ShouldThrowStartAfterEndException() {
+    void testCreateWhenStartEqualsEndShouldThrowStartAfterEndException() {
+
         LocalDateTime now = LocalDateTime.now();
         bookingInputRequest.setStart(now);
         bookingInputRequest.setEnd(now);
@@ -113,7 +116,8 @@ class BookingServiceUnitTests {
     }
 
     @Test
-    void statusChange_WhenApproved_ShouldUpdateStatus() {
+    void testStatusChangeWhenApprovedShouldUpdateStatus() {
+
         when(bookingRepository.findById(anyLong())).thenReturn(Optional.of(booking));
         when(bookingRepository.save(any(Booking.class))).thenReturn(booking);
 
@@ -125,7 +129,8 @@ class BookingServiceUnitTests {
     }
 
     @Test
-    void statusChange_WhenRejected_ShouldUpdateStatus() {
+    void testStatusChangeWhenRejectedShouldUpdateStatus() {
+
         when(bookingRepository.findById(anyLong())).thenReturn(Optional.of(booking));
         when(bookingRepository.save(any(Booking.class))).thenReturn(booking);
 
@@ -137,21 +142,24 @@ class BookingServiceUnitTests {
     }
 
     @Test
-    void statusChange_WhenBookingNotFound_ShouldThrowNotFoundException() {
+    void testStatusChangeWhenBookingNotFoundShouldThrowNotFoundException() {
+
         when(bookingRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         assertThrows(NotFoundException.class, () -> bookingService.statusChange(1L, true, 1L));
     }
 
     @Test
-    void statusChange_WhenUserNotOwner_ShouldThrowIncorrectOwnerException() {
+    void testStatusChangeWhenUserNotOwnerShouldThrowIncorrectOwnerException() {
+
         when(bookingRepository.findById(anyLong())).thenReturn(Optional.of(booking));
 
         assertThrows(IncorrectOwnerException.class, () -> bookingService.statusChange(1L, true, 2L));
     }
 
     @Test
-    void specificBooking_WhenBookingFound_ShouldReturnBookingDto() {
+    void testStatusChangeWhenBookingFoundShouldReturnBookingDto() {
+
         when(bookingRepository.findById(anyLong())).thenReturn(Optional.of(booking));
 
         BookingDto result = bookingService.specificBooking(1L, 1L);
@@ -161,21 +169,24 @@ class BookingServiceUnitTests {
     }
 
     @Test
-    void specificBooking_WhenBookingNotFound_ShouldThrowNotFoundException() {
+    void testSpecificBookingWhenBookingNotFoundShouldThrowNotFoundException() {
+
         when(bookingRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         assertThrows(NotFoundException.class, () -> bookingService.specificBooking(1L, 1L));
     }
 
     @Test
-    void specificBooking_WhenUserNotOwnerOrBooker_ShouldThrowNotAvailableItemException() {
+    void testSpecificBookingWhenUserNotOwnerOrBookerShouldThrowNotAvailableItemException() {
+
         when(bookingRepository.findById(anyLong())).thenReturn(Optional.of(booking));
 
         assertThrows(NotAvailableItemException.class, () -> bookingService.specificBooking(1L, 3L));
     }
 
     @Test
-    void getAllBookings_WhenStateAll_ShouldReturnAllBookings() {
+    void testGetAllBookingsWhenStateAllShouldReturnAllBookings() {
+
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(booker));
         when(bookingRepository.findByBooker_Id(anyLong(), any(Sort.class))).thenReturn(List.of(booking));
 
@@ -186,7 +197,8 @@ class BookingServiceUnitTests {
     }
 
     @Test
-    void getAllBookings_WhenStateCurrent_ShouldReturnCurrentBookings() {
+    void testGetAllBookingsWhenStateCurrentShouldReturnCurrentBookings() {
+
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(booker));
         when(bookingRepository.findByBooker_IdAndStartBeforeAndEndAfter(anyLong(), any(LocalDateTime.class), any(LocalDateTime.class), any(Sort.class)))
                 .thenReturn(List.of(booking));
@@ -198,7 +210,8 @@ class BookingServiceUnitTests {
     }
 
     @Test
-    void getAllBookings_WhenStatePast_ShouldReturnPastBookings() {
+    void testGetAllBookingsWhenStatePastShouldReturnPastBookings() {
+
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(booker));
         when(bookingRepository.findByBooker_IdAndEndBefore(anyLong(), any(LocalDateTime.class), any(Sort.class)))
                 .thenReturn(List.of(booking));
@@ -210,7 +223,8 @@ class BookingServiceUnitTests {
     }
 
     @Test
-    void getAllBookings_WhenStateFuture_ShouldReturnFutureBookings() {
+    void testGetAllBookingsWhenStateFutureShouldReturnFutureBookings() {
+
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(booker));
         when(bookingRepository.findByBooker_IdAndStartAfter(anyLong(), any(LocalDateTime.class), any(Sort.class)))
                 .thenReturn(List.of(booking));
@@ -222,7 +236,7 @@ class BookingServiceUnitTests {
     }
 
     @Test
-    void getAllBookings_WhenStateWaiting_ShouldReturnWaitingBookings() {
+    void testGetAllBookingsWhenStateWaitingShouldReturnWaitingBookings() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(booker));
         when(bookingRepository.findByBooker_IdAndStatus(anyLong(), any(BookingStatus.class), any(Sort.class)))
                 .thenReturn(List.of(booking));
@@ -234,7 +248,7 @@ class BookingServiceUnitTests {
     }
 
     @Test
-    void getAllBookings_WhenStateRejected_ShouldReturnRejectedBookings() {
+    void testGetAllBookingsWhenStateRejectedShouldReturnRejectedBookings() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(booker));
         when(bookingRepository.findByBooker_IdAndStatus(anyLong(), any(BookingStatus.class), any(Sort.class)))
                 .thenReturn(List.of(booking));
@@ -246,14 +260,14 @@ class BookingServiceUnitTests {
     }
 
     @Test
-    void getAllBookings_WhenUserNotFound_ShouldThrowNotFoundException() {
+    void testGetAllBookingWhenUserNotFoundShouldThrowNotFoundException() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         assertThrows(NotFoundException.class, () -> bookingService.getAllBookings(BookingState.ALL, 1L));
     }
 
     @Test
-    void getAllBookingsOfUserItems_WhenStateAll_ShouldReturnAllBookings() {
+    void testGetAllBookingsOfUserItemsWhenStateAllShouldReturnAllBookings() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(owner));
         when(itemRepository.countItemsByOwnerIdEquals(anyLong())).thenReturn(1L);
         when(bookingRepository.findByItem_Owner_Id(anyLong(), any(Sort.class))).thenReturn(List.of(booking));
@@ -265,7 +279,7 @@ class BookingServiceUnitTests {
     }
 
     @Test
-    void getAllBookingsOfUserItems_WhenStateCurrent_ShouldReturnCurrentBookings() {
+    void testGetAllBookingsOfUserItemsWhenStateCurrentShouldReturnCurrentBookings() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(owner));
         when(itemRepository.countItemsByOwnerIdEquals(anyLong())).thenReturn(1L);
         when(bookingRepository.findByItem_Owner_IdAndStartBeforeAndEndAfter(anyLong(), any(LocalDateTime.class), any(LocalDateTime.class), any(Sort.class)))
@@ -278,7 +292,7 @@ class BookingServiceUnitTests {
     }
 
     @Test
-    void getAllBookingsOfUserItems_WhenStatePast_ShouldReturnPastBookings() {
+    void testGetAllBookingsOfUserItemsWhenStatePastShouldReturnPastBookings() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(owner));
         when(itemRepository.countItemsByOwnerIdEquals(anyLong())).thenReturn(1L);
         when(bookingRepository.findByItem_Owner_IdAndEndBefore(anyLong(), any(LocalDateTime.class), any(Sort.class)))
@@ -291,7 +305,7 @@ class BookingServiceUnitTests {
     }
 
     @Test
-    void getAllBookingsOfUserItems_WhenStateFuture_ShouldReturnFutureBookings() {
+    void testGetAllBookingsOfUserItemsWhenStateFutureShouldReturnFutureBookings() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(owner));
         when(itemRepository.countItemsByOwnerIdEquals(anyLong())).thenReturn(1L);
         when(bookingRepository.findByItem_Owner_IdAndStartAfter(anyLong(), any(LocalDateTime.class), any(Sort.class)))
@@ -304,7 +318,7 @@ class BookingServiceUnitTests {
     }
 
     @Test
-    void getAllBookingsOfUserItems_WhenStateWaiting_ShouldReturnWaitingBookings() {
+    void testGetAllBookingsOfUserItemsWhenStateWaitingShouldReturnWaitingBookings() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(owner));
         when(itemRepository.countItemsByOwnerIdEquals(anyLong())).thenReturn(1L);
         when(bookingRepository.findByItem_Owner_IdAndStatus(anyLong(), any(BookingStatus.class), any(Sort.class)))
@@ -317,7 +331,7 @@ class BookingServiceUnitTests {
     }
 
     @Test
-    void getAllBookingsOfUserItems_WhenStateRejected_ShouldReturnRejectedBookings() {
+    void testGetAllBookingsOfUserItemsWhenStateRejectedShouldReturnRejectedBookings() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(owner));
         when(itemRepository.countItemsByOwnerIdEquals(anyLong())).thenReturn(1L);
         when(bookingRepository.findByItem_Owner_IdAndStatus(anyLong(), any(BookingStatus.class), any(Sort.class)))
@@ -330,14 +344,14 @@ class BookingServiceUnitTests {
     }
 
     @Test
-    void getAllBookingsOfUserItems_WhenUserNotFound_ShouldThrowNotFoundException() {
+    void testGetAllBookingsOfUserItemsWhenUserNotFoundShouldThrowNotFoundException() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         assertThrows(NotFoundException.class, () -> bookingService.getAllBookingsOfUserItems(BookingState.ALL, 1L));
     }
 
     @Test
-    void getAllBookingsOfUserItems_WhenNoItems_ShouldThrowNotFoundException() {
+    void testGetAllBookingsOfUserItemsWhenNoItemsShouldThrowNotFoundException() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(owner));
         when(itemRepository.countItemsByOwnerIdEquals(anyLong())).thenReturn(0L);
 

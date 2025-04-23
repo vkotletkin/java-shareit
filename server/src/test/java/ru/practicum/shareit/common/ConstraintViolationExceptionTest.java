@@ -19,9 +19,9 @@ class ConstraintViolationExceptionTest {
 
     @Test
     void shouldHandleConstraintViolationException() {
+
         ExceptionsGlobalHandler handler = new ExceptionsGlobalHandler();
 
-        // Создаем мок для ConstraintViolation
         ConstraintViolation<?> violation = mock(ConstraintViolation.class);
         Path path = mock(Path.class);
 

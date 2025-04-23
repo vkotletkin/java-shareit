@@ -90,7 +90,7 @@ public class UserTests {
     }
 
     @Test
-    void equals_ShouldReturnFalseForDifferentIds() {
+    void equalsShouldReturnFalseForDifferentIds() {
         User user1 = User.builder().id(1L).build();
         User user2 = User.builder().id(2L).build();
 
@@ -98,28 +98,28 @@ public class UserTests {
     }
 
     @Test
-    void equals_ShouldReturnFalseForNull() {
+    void equalsShouldReturnFalseForNull() {
         User user = User.builder().id(1L).build();
 
         assertNotEquals(null, user);
     }
 
     @Test
-    void equals_ShouldReturnFalseForDifferentClass() {
+    void equalsShouldReturnFalseForDifferentClass() {
         User user = User.builder().id(1L).build();
 
         assertNotEquals(user, new Object());
     }
 
     @Test
-    void equals_ShouldReturnTrueForSameInstance() {
+    void equalsShouldReturnTrueForSameInstance() {
         User user = User.builder().id(1L).build();
 
         assertEquals(user, user);
     }
 
     @Test
-    void hashCode_ShouldBeConsistent() {
+    void hashCodeShouldBeConsistent() {
         User user = User.builder().id(1L).build();
         int initialHashCode = user.hashCode();
 

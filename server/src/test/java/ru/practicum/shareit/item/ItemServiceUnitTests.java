@@ -69,7 +69,8 @@ public class ItemServiceUnitTests {
     private ItemServiceImpl itemService;
 
     @Test
-    void findAllItemsByUser_shouldReturnItemsWhenUserExists() {
+    void findAllItemsByUserShouldReturnItemsWhenUserExists() {
+
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(testUser));
         when(itemRepository.findByOwnerIdEquals(anyLong())).thenReturn(List.of(testItem));
 
@@ -83,7 +84,8 @@ public class ItemServiceUnitTests {
     }
 
     @Test
-    void findAllItemsByUser_shouldThrowExceptionWhenUserNotFound() {
+    void findAllItemsByUserShouldThrowExceptionWhenUserNotFound() {
+
         when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         assertThrows(RuntimeException.class, () -> itemService.findAllItemsByUser(1L));
@@ -92,7 +94,8 @@ public class ItemServiceUnitTests {
     }
 
     @Test
-    void findById_shouldReturnItemWithoutBookingsWhenNoBookingsExist() {
+    void findByIdShouldReturnItemWithoutBookingsWhenNoBookingsExist() {
+
         when(itemRepository.findById(anyLong())).thenReturn(Optional.of(testItem));
         when(bookingRepository.findAllByItem_Id(anyLong())).thenReturn(Collections.emptyList());
         when(commentRepository.findByItem_Id(anyLong())).thenReturn(Collections.emptyList());
@@ -110,10 +113,10 @@ public class ItemServiceUnitTests {
     }
 
     @Test
-    void findById_shouldReturnItemWithBookingsWhenBookingsExist() {
+    void findByIdShouldReturnItemWithBookingsWhenBookingsExist() {
+
         LocalDateTime now = LocalDateTime.now();
 
-        // Current booking (lastBooking) - началось в прошлом, закончится в будущем
         Booking currentBooking = Booking.builder()
                 .id(1L)
                 .start(now.minusHours(1))
@@ -123,7 +126,6 @@ public class ItemServiceUnitTests {
                 .booker(testUser)
                 .build();
 
-        // Future booking (nextBooking) - начнётся после текущего
         Booking futureBooking = Booking.builder()
                 .id(2L)
                 .start(now.plusHours(2))
@@ -142,11 +144,9 @@ public class ItemServiceUnitTests {
         assertNotNull(result);
         assertEquals(testItem.getId(), result.getId());
 
-        // Проверяем lastBooking (должен быть currentBooking)
         assertNotNull(result.getLastBooking(), "Last booking should not be null");
         assertEquals(currentBooking.getEnd(), result.getLastBooking());
 
-        // Проверяем nextBooking (должен быть futureBooking)
         assertNotNull(result.getNextBooking(), "Next booking should not be null");
         assertEquals(futureBooking.getStart(), result.getNextBooking());
 
@@ -156,7 +156,8 @@ public class ItemServiceUnitTests {
     }
 
     @Test
-    void findById_shouldThrowExceptionWhenItemNotFound() {
+    void findByIdShouldThrowExceptionWhenItemNotFound() {
+
         when(itemRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         assertThrows(RuntimeException.class, () -> itemService.findById(1L));
@@ -166,7 +167,8 @@ public class ItemServiceUnitTests {
     }
 
     @Test
-    void findByText_shouldReturnEmptyListWhenTextIsBlank() {
+    void findByTextShouldReturnEmptyListWhenTextIsBlank() {
+
         Collection<ItemDto> result = itemService.findByText(" ");
 
         assertNotNull(result);
@@ -175,7 +177,8 @@ public class ItemServiceUnitTests {
     }
 
     @Test
-    void findByText_shouldReturnItemsWhenTextIsNotBlank() {
+    void findByTextShouldReturnItemsWhenTextIsNotBlank() {
+
         when(itemRepository.findTextNameAndDescription(anyString())).thenReturn(List.of(testItem));
 
         Collection<ItemDto> result = itemService.findByText("test");
@@ -188,7 +191,8 @@ public class ItemServiceUnitTests {
 
 
     @Test
-    void createComment_shouldThrowExceptionWhenUserNotFound() {
+    void createCommentShouldThrowExceptionWhenUserNotFound() {
+
         when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         assertThrows(RuntimeException.class,
@@ -201,7 +205,8 @@ public class ItemServiceUnitTests {
     }
 
     @Test
-    void createComment_shouldThrowExceptionWhenItemNotFound() {
+    void createCommentShouldThrowExceptionWhenItemNotFound() {
+
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(testUser));
         when(itemRepository.findById(anyLong())).thenReturn(Optional.empty());
 
@@ -216,6 +221,7 @@ public class ItemServiceUnitTests {
 
     @Test
     void createComment_shouldThrowExceptionWhenNoBookingsExist() {
+
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(testUser));
         when(itemRepository.findById(anyLong())).thenReturn(Optional.of(testItem));
         when(bookingRepository.countByBooker_IdAndStatusAndEndBefore(anyLong(), any(), any()))
@@ -232,6 +238,7 @@ public class ItemServiceUnitTests {
 
     @Test
     void createComment_shouldCreateCommentWhenValid() {
+
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(testUser));
         when(itemRepository.findById(anyLong())).thenReturn(Optional.of(testItem));
         when(bookingRepository.countByBooker_IdAndStatusAndEndBefore(anyLong(), any(), any()))
@@ -255,6 +262,7 @@ public class ItemServiceUnitTests {
 
     @Test
     void findById_shouldReturnItemWithComments() {
+
         Comment testComment = Comment.builder()
                 .id(1L)
                 .text("Test Comment")

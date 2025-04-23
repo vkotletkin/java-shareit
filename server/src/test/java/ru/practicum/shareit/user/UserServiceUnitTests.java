@@ -26,7 +26,8 @@ class UserServiceUnitTests {
 
     @Test
     @Transactional
-    void create_shouldSaveAndReturnUserDto() {
+    void createShouldSaveAndReturnUserDto() {
+
         UserDto inputDto = UserDto.builder().name("test").email("test@test.com").build();
         User savedUser = User.builder().id(1L).name("test").email("test@test.com").build();
 
@@ -43,7 +44,8 @@ class UserServiceUnitTests {
 
     @Test
     @Transactional
-    void create_shouldThrowExceptionWhenEmailExists() {
+    void createShouldThrowExceptionWhenEmailExists() {
+
         UserDto inputDto = UserDto.builder().name("test").email("test@test.com").build();
 
         when(userRepository.countFindByEmail("test@test.com")).thenReturn(1L);
@@ -52,7 +54,8 @@ class UserServiceUnitTests {
     }
 
     @Test
-    void findById_shouldReturnUserDto() {
+    void findByIdShouldReturnUserDto() {
+
         long userId = 1L;
         User user = User.builder().id(userId).name("test").email("test@test.com").build();
 
@@ -66,7 +69,8 @@ class UserServiceUnitTests {
     }
 
     @Test
-    void findById_shouldThrowNotFoundException() {
+    void findByIdShouldThrowNotFoundException() {
+
         long userId = 1L;
 
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
@@ -76,7 +80,8 @@ class UserServiceUnitTests {
 
     @Test
     @Transactional
-    void delete_shouldCallRepository() {
+    void deleteShouldCallRepository() {
+
         long userId = 1L;
 
         userService.delete(userId);

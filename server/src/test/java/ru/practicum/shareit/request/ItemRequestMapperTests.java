@@ -15,7 +15,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class ItemRequestMapperTests {
 
     @Test
-    void mapToModel_shouldMapCorrectly() {
+    void mapToModelShouldMapCorrectly() {
+
         User user = new User();
         user.setId(1L);
 
@@ -35,7 +36,7 @@ public class ItemRequestMapperTests {
     }
 
     @Test
-    void mapToDto_shouldMapCorrectly() {
+    void mapToDtoShouldMapCorrectly() {
         User user = new User();
         user.setId(1L);
 
@@ -58,7 +59,7 @@ public class ItemRequestMapperTests {
     }
 
     @Test
-    void mapToDto_withMap_shouldMapCorrectly() {
+    void mapToDtoWithMapShouldMapCorrectly() {
         User user = new User();
         user.setId(1L);
 
@@ -83,7 +84,7 @@ public class ItemRequestMapperTests {
     }
 
     @Test
-    void mapToDto_withEmptyMaps_shouldReturnEmptyList() {
+    void mapToDtoWithEmptyMapsShouldReturnEmptyList() {
         List<ItemRequestDto> result = ItemRequestMapper.mapToDto(Map.of(), Map.of());
         assertTrue(result.isEmpty());
     }

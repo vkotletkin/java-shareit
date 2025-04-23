@@ -21,7 +21,7 @@ public class BookingTests {
 
     @Test
     void testBookingEntityMapping() {
-        // Given
+
         User booker = new User();
         booker.setName("Test User");
         booker.setEmail("test@email.com");
@@ -44,10 +44,8 @@ public class BookingTests {
         booking.setBooker(booker);
         booking.setStatus(BookingStatus.WAITING);
 
-        // When
         Booking savedBooking = entityManager.persistFlushFind(booking);
 
-        // Then
         assertThat(savedBooking.getId()).isNotNull();
         assertThat(savedBooking.getStart()).isNotNull();
         assertThat(savedBooking.getEnd()).isNotNull();
@@ -58,17 +56,15 @@ public class BookingTests {
 
     @Test
     void testLombokAnnotations() {
-        // Given
+
         Booking booking = new Booking();
         LocalDateTime start = LocalDateTime.now().plusDays(1);
         LocalDateTime end = LocalDateTime.now().plusDays(2);
 
-        // When
         booking.setStart(start);
         booking.setEnd(end);
         booking.setStatus(BookingStatus.APPROVED);
 
-        // Then
         assertThat(booking.getStart()).isEqualTo(start);
         assertThat(booking.getEnd()).isEqualTo(end);
         assertThat(booking.getStatus()).isEqualTo(BookingStatus.APPROVED);
@@ -79,7 +75,7 @@ public class BookingTests {
 
     @Test
     void testLazyLoadingForRelations() {
-        // Given
+
         User booker = new User();
         booker.setName("Test User");
         booker.setEmail("test@email.com");
@@ -101,11 +97,9 @@ public class BookingTests {
 
         Booking savedBooking = entityManager.persistFlushFind(booking);
 
-        // When
         entityManager.detach(savedBooking);
         Booking foundBooking = entityManager.find(Booking.class, savedBooking.getId());
 
-        // Then
         assertThat(foundBooking.getItem().getName()).isEqualTo("Test Item");
         assertThat(foundBooking.getBooker().getName()).isEqualTo("Test User");
     }

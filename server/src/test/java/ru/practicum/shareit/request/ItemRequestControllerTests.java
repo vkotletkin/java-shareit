@@ -42,6 +42,7 @@ public class ItemRequestControllerTests {
 
     @Test
     public void testSaveItemRequest() throws Exception {
+
         when(itemRequestService.save(any())).thenReturn(itemRequestDto);
 
         mvc.perform(post(ITEM_REQUESTS_ENDPOINT)

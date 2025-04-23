@@ -29,6 +29,7 @@ public class ItemControllerUnitTests {
 
     @Test
     void create_shouldCallServiceAndReturnItemDto() {
+
         ItemDto inputDto = ItemDto.builder()
                 .id(1L)
                 .name("Test item name")
@@ -56,6 +57,7 @@ public class ItemControllerUnitTests {
 
     @Test
     void findAllOnUser_shouldReturnListOfItems() {
+
         when(itemService.findAllItemsByUser(anyLong())).thenReturn(Collections.emptyList());
 
         List<ItemDto> result = (List<ItemDto>) itemController.findAllOnUser(1L);
@@ -65,7 +67,7 @@ public class ItemControllerUnitTests {
     }
 
     @Test
-    void findById_shouldReturnEnrichedItem() {
+    void findByIdShouldReturnEnrichedItem() {
 
         ItemEnrichedDto enrichedDto = ItemEnrichedDto.builder()
                 .id(1L)
@@ -87,7 +89,8 @@ public class ItemControllerUnitTests {
     }
 
     @Test
-    void update_shouldCallServiceAndReturnUpdatedItem() {
+    void updateShouldCallServiceAndReturnUpdatedItem() {
+
         ItemDto inputDto = ItemDto.builder()
                 .name("Test item name")
                 .description("Test item description")
@@ -114,7 +117,8 @@ public class ItemControllerUnitTests {
     }
 
     @Test
-    void search_shouldReturnListOfItems() {
+    void searchShouldReturnListOfItems() {
+
         when(itemService.findByText(anyString())).thenReturn(Collections.emptyList());
 
         List<ItemDto> result = (List<ItemDto>) itemController.search("test");
@@ -122,22 +126,4 @@ public class ItemControllerUnitTests {
         assertTrue(result.isEmpty());
         verify(itemService).findByText("test");
     }
-
-//    @Test
-//    void createComment_shouldCallServiceAndReturnComment() {
-//        CommentDto inputDto = new CommentDto();
-//        inputDto.setText("Test comment");
-//
-//        CommentDto outputDto = new CommentDto();
-//        outputDto.setId(1L);
-//        outputDto.setText("Test comment");
-//
-//        when(itemService.createComment(any(CommentDto.class), anyLong(), anyLong())).thenReturn(outputDto);
-//
-//        CommentDto result = itemController.createComment(inputDto, 1L, 1L);
-//
-//        assertEquals(outputDto, result);
-//        verify(itemService).createComment(any(CommentDto.class), eq(1L), eq(1L));
-//    }
-
 }

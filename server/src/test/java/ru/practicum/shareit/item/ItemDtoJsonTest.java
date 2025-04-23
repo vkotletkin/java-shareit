@@ -18,6 +18,7 @@ public class ItemDtoJsonTest {
 
     @Test
     public void testItemDto() throws Exception {
+
         ItemDto itemDto = ItemDto.builder()
                 .id(1L)
                 .name("Test item name")

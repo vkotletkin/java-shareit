@@ -21,6 +21,7 @@ public class BookingInputRequestJsonTest {
 
     @Test
     public void testBookingInputRequest() throws Exception {
+
         BookingInputRequest bookingInputRequest = BookingInputRequest.builder()
                 .id(1L)
                 .start(LocalDateTime.now().plusDays(1))

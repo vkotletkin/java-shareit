@@ -60,6 +60,7 @@ public class BookingControllerTests {
 
     @Test
     public void testBookingCreate() throws Exception {
+
         when(bookingService.create(any())).thenReturn(bookingDto);
 
         mvc.perform(post(BOOKING_ENDPOINT)
@@ -83,8 +84,7 @@ public class BookingControllerTests {
     }
 
     @Test
-    void create_shouldValidateInput() throws Exception {
-        // Given - invalid request (missing itemId)
+    void createShouldValidateInput() throws Exception {
 
         BookingInputRequest bookingInputRequest = BookingInputRequest.builder()
                 .id(1L)
@@ -92,8 +92,7 @@ public class BookingControllerTests {
                 .end(LocalDateTime.now().plusDays(3))
                 .build();
 
-        // When & Then
-        mvc.perform(post("/bookings")
+        mvc.perform(post(BOOKING_ENDPOINT)
                         .header(USER_IDENTIFICATOR_HEADER_NAME, 500L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding(StandardCharsets.UTF_8)
@@ -103,13 +102,11 @@ public class BookingControllerTests {
     }
 
     @Test
-    void statusChange_shouldApproveBooking() throws Exception {
-        // Given
+    void statusChangeShouldApproveBooking() throws Exception {
 
         when(bookingService.statusChange(eq(bookingDto.getId()), eq(true), eq(bookingDto.getBooker().getId())))
                 .thenReturn(bookingDto);
 
-        // When & Then
         mvc.perform(patch("/bookings/{booking-id}", bookingDto.getId())
                         .header(USER_IDENTIFICATOR_HEADER_NAME, bookingDto.getBooker().getId())
                         .param("approved", "true"))
@@ -119,13 +116,11 @@ public class BookingControllerTests {
     }
 
     @Test
-    void get_shouldReturnBooking() throws Exception {
-        // Given
+    void shouldReturnBooking() throws Exception {
 
         when(bookingService.specificBooking(eq(bookingDto.getId()), eq(bookingDto.getBooker().getId())))
                 .thenReturn(bookingDto);
 
-        // When & Then
         mvc.perform(get("/bookings/{booking-id}", bookingDto.getId())
                         .header(USER_IDENTIFICATOR_HEADER_NAME, bookingDto.getBooker().getId()))
                 .andExpect(status().isOk())
@@ -133,8 +128,7 @@ public class BookingControllerTests {
     }
 
     @Test
-    void getAllBookingsOfUser_shouldReturnList() throws Exception {
-
+    void getAllBookingsOfUserShouldReturnList() throws Exception {
 
         when(bookingService.getAllBookings(eq(BookingState.ALL), eq(bookingDto.getBooker().getId())))
                 .thenReturn(List.of(bookingDto));
@@ -148,22 +142,21 @@ public class BookingControllerTests {
     }
 
     @Test
-    void getAllBookingsOfUser_shouldUseDefaultState() throws Exception {
+    void getAllBookingsOfUserShouldUseDefaultState() throws Exception {
 
         when(bookingService.getAllBookings(eq(BookingState.ALL), eq(bookingDto.getBooker().getId())))
                 .thenReturn(List.of());
 
-        // When & Then
-        mvc.perform(get("/bookings")
+        mvc.perform(get(BOOKING_ENDPOINT)
                         .header(USER_IDENTIFICATOR_HEADER_NAME, bookingDto.getBooker().getId()))
                 .andExpect(status().isOk());
     }
 
 
     @Test
-    void get_shouldReturnNotFoundForInvalidBookingId() throws Exception {
+    void getShouldReturnNotFoundForInvalidBookingId() throws Exception {
 
-        Long userId = 1L;
+        long userId = 1L;
 
         when(bookingService.specificBooking(anyLong(), anyLong()))
                 .thenThrow(new NotFoundException("Booking not found"));
@@ -174,13 +167,13 @@ public class BookingControllerTests {
     }
 
     @Test
-    void statusChange_shouldReturnForbiddenForNonOwner() throws Exception {
-        Long bookingId = 1L;
-        // Given
+    void statusChangeShouldReturnForbiddenForNonOwner() throws Exception {
+
+        long bookingId = 1L;
+
         when(bookingService.statusChange(anyLong(), anyBoolean(), anyLong()))
                 .thenThrow(new IncorrectOwnerException("Only owner can change status"));
 
-        // When & Then
         mvc.perform(patch("/bookings/{booking-id}", bookingId)
                         .header(USER_IDENTIFICATOR_HEADER_NAME, 500L)
                         .param("approved", "true"))

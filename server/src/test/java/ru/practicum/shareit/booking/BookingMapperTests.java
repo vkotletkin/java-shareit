@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class BookingMapperTests {
 
     @Test
-    void testShouldMapInputRequestToModel() {
+    void shouldMapInputRequestToModel() {
 
         LocalDateTime start = LocalDateTime.now().plusDays(1);
         LocalDateTime end = LocalDateTime.now().plusDays(2);
@@ -44,7 +44,7 @@ public class BookingMapperTests {
     }
 
     @Test
-    void testShouldSetWaitingStatusWhenNull() {
+    void shouldSetWaitingStatusWhenNull() {
 
         BookingInputRequest request = BookingInputRequest.builder()
                 .status(null)
@@ -56,12 +56,11 @@ public class BookingMapperTests {
 
         Booking booking = BookingMapper.mapToModel(request, user, item);
 
-
         assertEquals(BookingStatus.WAITING, booking.getStatus());
     }
 
     @Test
-    void testShouldMapModelToDto() {
+    void shouldMapModelToDto() {
 
         LocalDateTime start = LocalDateTime.now().plusDays(1);
         LocalDateTime end = LocalDateTime.now().plusDays(2);
@@ -97,7 +96,7 @@ public class BookingMapperTests {
     }
 
     @Test
-    void testShouldHandleListOfBookings() {
+    void shouldHandleListOfBookings() {
 
         LocalDateTime start = LocalDateTime.now().plusDays(1);
         LocalDateTime end = LocalDateTime.now().plusDays(2);
@@ -130,7 +129,7 @@ public class BookingMapperTests {
     }
 
     @Test
-    void testShouldReturnEmptyListForEmptyInput() {
+    void shouldReturnEmptyListForEmptyInput() {
 
         List<Booking> emptyList = List.of();
 

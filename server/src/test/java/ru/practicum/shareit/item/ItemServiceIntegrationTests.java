@@ -48,6 +48,7 @@ public class ItemServiceIntegrationTests {
 
     @Test
     public void testSaveItem() {
+
         user = userRepository.save(user);
 
         itemDto.setOwnerId(user.getId());
@@ -63,6 +64,7 @@ public class ItemServiceIntegrationTests {
 
     @Test
     public void testFindAllItemsForUser() {
+
         user = userRepository.save(user);
 
         itemDto.setOwnerId(user.getId());

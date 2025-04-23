@@ -11,6 +11,7 @@ class StartAndAfterExceptionTest {
 
     @Test
     void shouldCreateExceptionWithMessage() {
+
         String message = "Start after end";
         StartAfterEndException exception = new StartAfterEndException(message);
 
@@ -19,6 +20,7 @@ class StartAndAfterExceptionTest {
 
     @Test
     void shouldCreateExceptionWithFormattedMessage() {
+
         String start = "2023-01-01";
         String end = "2022-12-31";
         String expectedMessage = "Start date 2023-01-01 is after end date 2022-12-31";
@@ -30,6 +32,7 @@ class StartAndAfterExceptionTest {
 
     @Test
     void shouldHandleExceptionInGlobalHandler() {
+
         ExceptionsGlobalHandler handler = new ExceptionsGlobalHandler();
         String message = "Invalid date range";
         StartAfterEndException exception = new StartAfterEndException(message);

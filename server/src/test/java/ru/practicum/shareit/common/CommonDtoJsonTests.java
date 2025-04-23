@@ -20,6 +20,7 @@ public class CommonDtoJsonTests {
 
     @Test
     public void testJsonBaseResponse() throws Exception {
+
         BaseResponse baseResponse = new BaseResponse("User is deleted");
 
         JsonContent<BaseResponse> result = jsonBaseResponse.write(baseResponse);
@@ -29,6 +30,7 @@ public class CommonDtoJsonTests {
 
     @Test
     public void testJsonCatalog() throws Exception {
+
         CatalogDto catalogDto = CatalogDto.builder()
                 .id(1L)
                 .name("Test")

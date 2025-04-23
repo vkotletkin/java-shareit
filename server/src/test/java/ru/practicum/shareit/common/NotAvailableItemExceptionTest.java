@@ -14,6 +14,7 @@ class NotAvailableItemExceptionTest {
 
     @Test
     void shouldCreateExceptionWithMessage() {
+
         String message = "Item not available";
         NotAvailableItemException exception = new NotAvailableItemException(message);
 
@@ -22,7 +23,8 @@ class NotAvailableItemExceptionTest {
 
     @Test
     void shouldCreateExceptionWithFormattedMessage() {
-        Long itemId = 456L;
+
+        long itemId = 456L;
         String expectedMessage = "Item 456 is not available";
         NotAvailableItemException exception = new NotAvailableItemException(
                 "Item {0} is not available", itemId);
@@ -32,6 +34,7 @@ class NotAvailableItemExceptionTest {
 
     @Test
     void shouldCreateExceptionSupplier() {
+
         String message = "Item not available";
         Supplier<NotAvailableItemException> supplier =
                 NotAvailableItemException.notAvailableItemException(message);
@@ -42,6 +45,7 @@ class NotAvailableItemExceptionTest {
 
     @Test
     void shouldHandleExceptionInGlobalHandler() {
+
         ExceptionsGlobalHandler handler = new ExceptionsGlobalHandler();
         String message = "Item availability check failed";
         NotAvailableItemException exception = new NotAvailableItemException(message);

@@ -52,7 +52,7 @@ public class ItemRequestServiceUnitTests {
     }
 
     @Test
-    void findItemsOfUser_shouldReturnEmptyListWhenNoRequestsFound() {
+    void findItemsOfUserShouldReturnEmptyListWhenNoRequestsFound() {
         long userId = 1L;
 
         when(itemRequestRepository.findByRequestor_Id(userId))
@@ -68,7 +68,8 @@ public class ItemRequestServiceUnitTests {
     }
 
     @Test
-    void findItemsOfUser_shouldReturnRequestsWithItems() {
+    void findItemsOfUserShouldReturnRequestsWithItems() {
+
         long userId = 1L;
         long requestId = 1L;
 
@@ -94,13 +95,13 @@ public class ItemRequestServiceUnitTests {
         List<ItemRequestDto> result = itemRequestService.findItemsOfUser(userId);
 
         assertEquals(1, result.size());
-        assertEquals(requestId, result.get(0).getId());
-        assertEquals(1, result.get(0).getItems().size());
-        assertEquals(item.getId(), result.get(0).getItems().get(0).getId());
+        assertEquals(requestId, result.getFirst().getId());
+        assertEquals(1, result.getFirst().getItems().size());
+        assertEquals(item.getId(), result.getFirst().getItems().getFirst().getId());
     }
 
     @Test
-    void findItemsOfUser_shouldFilterItemsWithNullRequestId() {
+    void findItemsOfUserShouldFilterItemsWithNullRequestId() {
         long userId = 1L;
         long requestId = 1L;
 
@@ -133,7 +134,7 @@ public class ItemRequestServiceUnitTests {
     }
 
     @Test
-    void findItemsNotUser_shouldReturnEmptyListWhenNoRequestsFound() {
+    void findItemsNotUserShouldReturnEmptyListWhenNoRequestsFound() {
         long userId = 1L;
 
         when(itemRequestRepository.findByRequestorIdNotEqual(userId))
@@ -149,7 +150,7 @@ public class ItemRequestServiceUnitTests {
     }
 
     @Test
-    void findItemsNotUser_shouldReturnRequestsWithItems() {
+    void findItemsNotUserShouldReturnRequestsWithItems() {
         long userId = 1L;
         long requestId = 1L;
         long otherUserId = 2L;
@@ -182,7 +183,7 @@ public class ItemRequestServiceUnitTests {
     }
 
     @Test
-    void findItemsNotUser_shouldIncludeRequestsWithoutItems() {
+    void findItemsNotUserShouldIncludeRequestsWithoutItems() {
         long userId = 1L;
         long requestId = 1L;
         long otherUserId = 2L;

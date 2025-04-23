@@ -14,6 +14,7 @@ class NotFoundExceptionTest {
 
     @Test
     void shouldCreateExceptionWithMessage() {
+
         String message = "Not found";
         NotFoundException exception = new NotFoundException(message);
 
@@ -22,7 +23,8 @@ class NotFoundExceptionTest {
 
     @Test
     void shouldCreateExceptionWithFormattedMessage() {
-        Long userId = 789L;
+
+        long userId = 789L;
         String expectedMessage = "User 789 not found";
         NotFoundException exception = new NotFoundException(
                 "User {0} not found", userId);
@@ -32,6 +34,7 @@ class NotFoundExceptionTest {
 
     @Test
     void shouldCreateExceptionSupplier() {
+
         String message = "Not found";
         Supplier<NotFoundException> supplier =
                 NotFoundException.notFoundException(message);
@@ -42,6 +45,7 @@ class NotFoundExceptionTest {
 
     @Test
     void shouldHandleExceptionInGlobalHandler() {
+
         ExceptionsGlobalHandler handler = new ExceptionsGlobalHandler();
         String message = "Resource not found";
         NotFoundException exception = new NotFoundException(message);

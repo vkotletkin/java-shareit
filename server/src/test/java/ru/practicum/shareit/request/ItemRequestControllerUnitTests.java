@@ -25,8 +25,9 @@ public class ItemRequestControllerUnitTests {
     private ItemRequestController controller;
 
     @Test
-    void save_shouldCallServiceAndReturnResult() {
-        Long userId = 1L;
+    void saveShouldCallServiceAndReturnResult() {
+
+        long userId = 1L;
         ItemRequestDto inputDto = ItemRequestDto.builder().build();
         inputDto.setDescription("Need item");
 
@@ -47,7 +48,8 @@ public class ItemRequestControllerUnitTests {
     }
 
     @Test
-    void findAll_shouldCallServiceAndReturnResult() {
+    void findAllShouldCallServiceAndReturnResult() {
+
         long userId = 1L;
         List<ItemRequestDto> expected = List.of(ItemRequestDto.builder().build());
 
@@ -60,8 +62,9 @@ public class ItemRequestControllerUnitTests {
     }
 
     @Test
-    void findAllNotUser_shouldCallServiceAndReturnResult() {
-        Long userId = 1L;
+    void findAllNotUserShouldCallServiceAndReturnResult() {
+
+        long userId = 1L;
         List<ItemRequestDto> expected = List.of(ItemRequestDto.builder().build());
 
         when(service.findItemsNotUser(userId)).thenReturn(expected);
@@ -73,7 +76,8 @@ public class ItemRequestControllerUnitTests {
     }
 
     @Test
-    void findById_shouldCallServiceAndReturnResult() {
+    void findByIdShouldCallServiceAndReturnResult() {
+
         long requestId = 1L;
         ItemRequestDto expected = ItemRequestDto.builder().build();
 

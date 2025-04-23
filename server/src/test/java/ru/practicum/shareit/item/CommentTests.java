@@ -12,7 +12,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class CommentTests {
 
     @Test
-    void comment_shouldHaveCorrectGettersAndSetters() {
+    void commentShouldHaveCorrectGettersAndSetters() {
+
         Comment comment = new Comment();
         comment.setId(1L);
         comment.setText("Test comment");
