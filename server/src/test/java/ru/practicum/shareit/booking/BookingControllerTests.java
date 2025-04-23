@@ -175,13 +175,13 @@ public class BookingControllerTests {
 
     @Test
     void statusChange_shouldReturnForbiddenForNonOwner() throws Exception {
-        Long BOOKING_ID = 1L;
+        Long bookingId = 1L;
         // Given
         when(bookingService.statusChange(anyLong(), anyBoolean(), anyLong()))
                 .thenThrow(new IncorrectOwnerException("Only owner can change status"));
 
         // When & Then
-        mvc.perform(patch("/bookings/{booking-id}", BOOKING_ID)
+        mvc.perform(patch("/bookings/{booking-id}", bookingId)
                         .header(USER_IDENTIFICATOR_HEADER_NAME, 500L)
                         .param("approved", "true"))
                 .andExpect(status().is4xxClientError());

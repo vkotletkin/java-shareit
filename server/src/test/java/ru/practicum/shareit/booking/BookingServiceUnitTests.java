@@ -5,36 +5,28 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Sort;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingInputRequest;
-import ru.practicum.shareit.exception.*;
+import ru.practicum.shareit.exception.IncorrectOwnerException;
+import ru.practicum.shareit.exception.NotAvailableItemException;
+import ru.practicum.shareit.exception.NotFoundException;
+import ru.practicum.shareit.exception.StartAfterEndException;
 import ru.practicum.shareit.item.dal.ItemRepository;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static ru.practicum.shareit.booking.BookingStatus.*;
 
 @ExtendWith(MockitoExtension.class)
 class BookingServiceUnitTests {
-
-    @Mock
-    private BookingRepository bookingRepository;
-    @Mock
-    private ItemRepository itemRepository;
-    @Mock
-    private UserRepository userRepository;
-
-    @InjectMocks
-    private BookingServiceImpl bookingService;
 
     private final User owner = User.builder().id(1L).name("Owner").build();
     private final User booker = User.builder().id(2L).name("Booker").build();
@@ -51,7 +43,14 @@ class BookingServiceUnitTests {
             .available(false)
             .owner(owner)
             .build();
-
+    @Mock
+    private BookingRepository bookingRepository;
+    @Mock
+    private ItemRepository itemRepository;
+    @Mock
+    private UserRepository userRepository;
+    @InjectMocks
+    private BookingServiceImpl bookingService;
 
     @Test
     void create_whenItemNotFound_thenThrowNotFoundException() {
@@ -183,8 +182,6 @@ class BookingServiceUnitTests {
     }
 
     // ========== GET ALL BOOKINGS (BY BOOKER) ==========
-
-
 
 
     // ========== GET ALL BOOKINGS (BY OWNER) ==========

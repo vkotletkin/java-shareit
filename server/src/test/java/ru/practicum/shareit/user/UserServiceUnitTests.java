@@ -1,42 +1,86 @@
 package ru.practicum.shareit.user;
 
-import org.junit.jupiter.api.BeforeEach;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import ru.practicum.shareit.exception.AlreadyExistsEmailException;
+import ru.practicum.shareit.exception.NotFoundException;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.mockito.Mockito.when;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class UserServiceUnitTests {
+class UserServiceUnitTests {
 
     @Mock
-    private UserService userService;
+    private UserRepository userRepository;
 
-    private UserDto userDto;
+    @InjectMocks
+    private UserServiceImpl userService;
 
-    @BeforeEach
-    public void setUp() {
-        userDto = UserDto.builder()
-                .id(1L)
-                .name("Vladislav")
-                .email("vladislavkotletkin@gmail.com")
-                .build();
+    @Test
+    @Transactional
+    void create_shouldSaveAndReturnUserDto() {
+        UserDto inputDto = UserDto.builder().name("test").email("test@test.com").build();
+        User savedUser = User.builder().id(1L).name("test").email("test@test.com").build();
+
+        when(userRepository.countFindByEmail("test@test.com")).thenReturn(0L);
+        when(userRepository.save(any(User.class))).thenReturn(savedUser);
+
+        UserDto result = userService.create(inputDto);
+
+        assertEquals(1L, result.getId());
+        assertEquals("test", result.getName());
+        assertEquals("test@test.com", result.getEmail());
+        verify(userRepository).save(any(User.class));
     }
 
     @Test
-    public void testFindById() {
+    @Transactional
+    void create_shouldThrowExceptionWhenEmailExists() {
+        UserDto inputDto = UserDto.builder().name("test").email("test@test.com").build();
 
-        when(userService.findById(userDto.getId()))
-                .thenReturn(userDto);
+        when(userRepository.countFindByEmail("test@test.com")).thenReturn(1L);
 
-        UserDto userDtoNew = userService.findById(userDto.getId());
+        assertThrows(AlreadyExistsEmailException.class, () -> userService.create(inputDto));
+    }
 
-        Mockito.verify(userService, Mockito.times(1)).findById(userDto.getId());
-        assertThat(userDtoNew.getId(), equalTo(userDto.getId()));
+    @Test
+    void findById_shouldReturnUserDto() {
+        long userId = 1L;
+        User user = User.builder().id(userId).name("test").email("test@test.com").build();
+
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+
+        UserDto result = userService.findById(userId);
+
+        assertEquals(userId, result.getId());
+        assertEquals("test", result.getName());
+        assertEquals("test@test.com", result.getEmail());
+    }
+
+    @Test
+    void findById_shouldThrowNotFoundException() {
+        long userId = 1L;
+
+        when(userRepository.findById(userId)).thenReturn(Optional.empty());
+
+        assertThrows(NotFoundException.class, () -> userService.findById(userId));
+    }
+
+    @Test
+    @Transactional
+    void delete_shouldCallRepository() {
+        long userId = 1L;
+
+        userService.delete(userId);
+
+        verify(userRepository).deleteById(userId);
     }
 }
