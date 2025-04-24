@@ -5,9 +5,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 import ru.practicum.shareit.user.User;
 
-@Getter
-@Setter
-@ToString
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
